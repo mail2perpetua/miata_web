@@ -1,7 +1,7 @@
 import { Suspense, useCallback, useEffect, useState } from 'react';
 import { PanelLeftClose, PanelLeftOpen } from 'lucide-react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { PageLoader, useConfirm } from '@/components';
+import { PageLoader } from '@/components';
 import { useAuth } from '@/features/auth/AuthContext';
 import { NotificationBell } from './NotificationBell';
 import { Sidebar } from './Sidebar';
@@ -13,7 +13,6 @@ export function DashboardLayout() {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const confirm = useConfirm();
   const [navState, setNavState] = useState({ pathname: location.pathname, open: false });
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [isCompact, setIsCompact] = useState(() => window.matchMedia('(max-width: 1024px)').matches);
@@ -47,10 +46,8 @@ export function DashboardLayout() {
   }, [user.role]);
 
   const handleLogout = async () => {
-    if (await confirm({ title: 'Log out?', message: 'You will need to sign in again to access the portal.', confirmLabel: 'Log out' })) {
-      await logout();
-      navigate(`/login/${user.role}`, { replace: true });
-    }
+    await logout();
+    navigate(`/login/${user.role}`, { replace: true });
   };
 
   return (

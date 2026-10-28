@@ -99,7 +99,7 @@ function PasswordForm() {
   const form = useForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const onSubmit = form.submit(
     async (values) => {
-      const res = await api.post('/profile/password', { currentPassword: values.currentPassword, newPassword: values.newPassword });
+      const res = await api.post('/auth/password', { currentPassword: values.currentPassword, newPassword: values.newPassword });
       startSession(res.data); // other devices are signed out; this one gets a fresh session
       form.setValues({ currentPassword: '', newPassword: '', confirmPassword: '' });
       toast.success('Password changed. Other devices have been signed out.');

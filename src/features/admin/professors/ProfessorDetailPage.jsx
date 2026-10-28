@@ -29,22 +29,51 @@ import { useApiAction } from '@/hooks/useApiAction';
 import { useFetch } from '@/hooks/useFetch';
 import { api } from '@/services/api';
 import { dateRange, formatDate, formatDateTime, timeAgo } from '@/utils/format';
+import { sessionSummary } from '../../shared/timetable';
 import { AccountActions } from '../shared/AccountActions';
+
+/**
+ * Every course the professor teaches, however linked: assigned to the whole course, a lecturer in its timetable, or
+ * assigned some of its modules.
+ */
+function teachingCourses(p) {
+  const byId = new Map();
+  const entry = (id, title, code) => {
+    if (!byId.has(id)) byId.set(id, { id, title, code, assigned: false, lectures: [], moduleCount: 0 });
+    return byId.get(id);
+  };
+  for (const c of p.courses) entry(c.id, c.title, c.code).assigned = true;
+  for (const l of p.lectures) entry(l.courseId, l.courseTitle, l.courseCode).lectures.push(l);
+  for (const m of p.modules) entry(m.courseId, m.courseTitle, m.courseCode).moduleCount += 1;
+  return [...byId.values()];
+}
+
+/** "PGS-2627 · Lecturer · 4 modules": the course code and how the professor is linked to it. */
+const courseLinks = (c) =>
+  [
+    c.code,
+    c.assigned && 'Whole course',
+    c.lectures.length > 0 && 'Lecturer',
+    c.moduleCount > 0 && `${c.moduleCount} ${c.moduleCount === 1 ? 'module' : 'modules'}`,
+  ]
+    .filter(Boolean)
+    .join(' · ');
 
 export default function ProfessorDetailPage() {
   const { userId } = useParams();
   const state = useFetch(`/admin/professors/${userId}`);
   const courses = useFetch('/admin/lookups/courses');
-  const [courseToAssign, setCourseToAssign] = useState('');
+  // null until the admin picks: the course the professor already teaches (but is not assigned to as a whole) is preselected.
+  const [courseToAssign, setCourseToAssign] = useState(null);
   const confirm = useConfirm();
   const { run, busy } = useApiAction();
 
-  const assign = () =>
-    run(() => api.post(`/admin/courses/${courseToAssign}/professors`, { professorId: Number(userId) }), {
+  const assign = (courseId) =>
+    run(() => api.post(`/admin/courses/${courseId}/professors`, { professorId: Number(userId) }), {
       success: 'Assigned to course',
       key: 'assign',
       onDone: () => {
-        setCourseToAssign('');
+        setCourseToAssign(null);
         state.reload();
       },
     });
@@ -67,6 +96,10 @@ export default function ProfessorDetailPage() {
     <AsyncContent state={state}>
       {(p) => {
         const assignedIds = p.courses.map((c) => c.id);
+        const assignable = (courses.data ?? []).filter((c) => c.isActive && !assignedIds.includes(c.id));
+        const teaching = teachingCourses(p);
+        const suggested = teaching.find((t) => !t.assigned && assignable.some((c) => c.id === t.id));
+        const selectedCourse = courseToAssign ?? suggested?.id ?? '';
         return (
           <>
             <PageHeader
@@ -98,20 +131,18 @@ export default function ProfessorDetailPage() {
                   <div className="toolbar">
                     <select
                       className="select select--inline"
-                      value={courseToAssign}
+                      value={selectedCourse}
                       onChange={(e) => setCourseToAssign(e.target.value)}
                       aria-label="Course to assign"
                     >
                       <option value="">Select a course…</option>
-                      {(courses.data ?? [])
-                        .filter((c) => c.isActive && !assignedIds.includes(c.id))
-                        .map((c) => (
-                          <option key={c.id} value={c.id}>
-                            {c.title}
-                          </option>
-                        ))}
+                      {assignable.map((c) => (
+                        <option key={c.id} value={c.id}>
+                          {c.title}
+                        </option>
+                      ))}
                     </select>
-                    <Button size="sm" disabled={!courseToAssign} loading={busy === 'assign'} onClick={assign}>
+                    <Button size="sm" disabled={!selectedCourse} loading={busy === 'assign'} onClick={() => assign(selectedCourse)}>
                       Assign to course
                     </Button>
                   </div>
@@ -234,6 +265,28 @@ export default function ProfessorDetailPage() {
                       ['Department', p.profile?.department],
                       ['Specialization', p.profile?.specialization],
                       ['Qualification', p.profile?.qualification],
+                      [
+                        teaching.length > 1 ? 'Assigned courses' : 'Assigned course',
+                        teaching.length > 0 ? (
+                          <div style={{ display: 'grid', gap: 10 }}>
+                            {teaching.map((c) => (
+                              <div key={c.id}>
+                                <Link to={`/admin/courses/${c.id}`} className="cell-person__name">
+                                  {c.title}
+                                </Link>
+                                <span className="cell-person__sub" style={{ display: 'block' }}>
+                                  {courseLinks(c)}
+                                </span>
+                                {c.lectures.map((l) => (
+                                  <span key={l.id} className="cell-person__sub" style={{ display: 'block' }}>
+                                    {sessionSummary(l)}
+                                  </span>
+                                ))}
+                              </div>
+                            ))}
+                          </div>
+                        ) : null,
+                      ],
                       ['Joined', formatDate(p.createdAt)],
                       ['Last sign-in', formatDateTime(p.lastLoginAt)],
                     ]}
