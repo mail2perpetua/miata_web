@@ -1,0 +1,15 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Environment — only .env.example is committed
+.env
+.env.*
+!.env.example
+
+# Logs & OS files
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,279 @@
+/*
+ * Additions to the original Eduact theme for the React site. Everything else comes unchanged from
+ * public/assets/css/eduact.css. Colours and fonts use the theme's own variables.
+ */
+
+/* Page wrapper used by every page component: generates no box, so sections lay out exactly as before. */
+.website-page {
+  display: contents;
+}
+
+/* The original pages set this section's padding inline with !important. */
+.blog-page.blog-page--flush {
+  padding: 0 0 30px 0 !important;
+}
+
+/* ─── Form feedback ─── */
+.form-message {
+  margin: 16px 0 0;
+  font-weight: 600;
+  color: #1e7e34;
+}
+
+.form-message--error {
+  color: #c0392b;
+}
+
+.form-message a {
+  color: var(--eduact-secondary);
+  text-decoration: underline;
+}
+
+.login-page__form .form-message {
+  margin: 0 0 20px;
+}
+
+.login-page__field-error,
+.login-page__field-hint {
+  display: block;
+  margin-top: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  text-align: left;
+}
+
+.login-page__field-error {
+  color: #c0392b;
+}
+
+.login-page__field-hint {
+  color: var(--eduact-text);
+}
+
+.login-page__field-error--block {
+  flex-basis: 100%;
+}
+
+/* The theme styles only email/password inputs; the registration form also has text and phone fields. */
+.login-page__form-input-box input[type='text'],
+.login-page__form-input-box input:not([type]),
+.login-page__form-input-box input[type='tel'] {
+  height: 60px;
+  width: 100%;
+  border: none;
+  background-color: var(--eduact-soft5);
+  padding-left: 30px;
+  padding-right: 30px;
+  outline: none;
+  font-size: 16px;
+  color: var(--eduact-text);
+  display: block;
+  font-weight: 600;
+  border-radius: 4px;
+}
+
+.login-page__form-input-box input:focus-visible {
+  box-shadow: 0 0 0 2px var(--eduact-base);
+}
+
+.login-page__form-input-box input[aria-invalid='true'] {
+  box-shadow: 0 0 0 1px #c0392b;
+}
+
+.login-page__form-input-box input[readonly] {
+  opacity: 0.8;
+}
+
+/* Show/hide password button inside the field (AuthField). Overrides the theme's input padding. */
+.login-page__form-input-box.login-page__form-input-box--password input[type] {
+  padding-right: 64px;
+}
+
+.login-page__form-input-box input::-ms-reveal {
+  display: none;
+}
+
+.login-page__password-toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background: none;
+  color: var(--eduact-text);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.login-page__password-toggle:hover {
+  color: var(--eduact-secondary);
+}
+
+.login-page__password-toggle:focus-visible {
+  outline: 2px solid var(--eduact-base);
+  outline-offset: -2px;
+}
+
+.login-page__form-btn-box .eduact-btn[disabled] {
+  opacity: 0.7;
+  cursor: progress;
+}
+
+.login-page__lead {
+  margin: -16px 0 28px;
+  font-weight: 500;
+}
+
+.login-page__switch {
+  margin: 28px 0 0;
+  font-weight: 600;
+}
+
+.login-page__switch a,
+.login-portal__help a,
+.login-roles__register a {
+  color: var(--eduact-secondary);
+}
+
+.login-page__switch a:hover,
+.login-portal__help a:hover,
+.login-roles__register a:hover {
+  color: var(--eduact-black);
+}
+
+/* Single-column variant (forgot / reset password): no dashed divider, centred. */
+.login-page__area--single {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.login-page__area--single::after {
+  display: none;
+}
+
+.login-page__area--single .login-page__wrap {
+  padding: 0;
+}
+
+@media (max-width: 991px) {
+  .login-page__area--single {
+    padding-top: 1px;
+  }
+}
+
+/* ─── /login — choose a portal ─── */
+.login-roles .section-title {
+  margin-bottom: 0;
+}
+
+/* Room for the card icons, which overlap the top edge of each card. */
+.login-roles__list {
+  padding-top: 100px;
+}
+
+.login-roles__card {
+  margin-bottom: 100px;
+}
+
+.login-roles__card .service-two__wrapper {
+  height: 100%;
+}
+
+.login-roles__card .service-two__text {
+  min-height: 78px;
+}
+
+.login-roles__register {
+  margin: 0;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--eduact-black);
+}
+
+/* ─── /login/:role — portal summary beside the form ─── */
+.login-portal__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-right: 10px;
+  border-radius: 50%;
+  background-color: var(--eduact-secondary);
+  color: var(--eduact-white);
+  font-size: 24px;
+  vertical-align: middle;
+}
+
+.login-portal__text {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 0 0 20px;
+}
+
+.login-portal__list {
+  list-style: none;
+  margin: 0 0 24px;
+  padding: 0;
+}
+
+.login-portal__list li {
+  position: relative;
+  padding-left: 30px;
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: var(--eduact-black);
+}
+
+.login-portal__list .fa {
+  position: absolute;
+  left: 0;
+  top: 5px;
+  color: var(--eduact-base);
+}
+
+.login-portal__help {
+  margin: 0;
+  font-weight: 500;
+}
+
+.login-portal .form-message {
+  margin: 0 0 20px;
+}
+
+/* ─── Simple message page (404) ─── */
+.site-message {
+  padding: 120px 0;
+}
+
+.site-message__title {
+  font-size: 32px;
+  margin-bottom: 16px;
+}
+
+.site-message__text {
+  margin: 0 auto 32px;
+  max-width: 520px;
+  font-weight: 500;
+}
+
+@media (max-width: 767px) {
+  .site-message {
+    padding: 80px 0;
+  }
+}
+
+/* ─── Page title banners ───
+   Each inner page shows a photo that matches its content (PAGE_BANNERS in content/site.js) instead of the theme's
+   two generic stock photos. Same size, overlay and parallax as the original. */
+.page-header.page-header--photo .page-header__bg {
+  background-image: var(--page-header-image);
+  background-position: var(--page-header-position, center center);
+}

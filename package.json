@@ -1,0 +1,35 @@
+{
+  "name": "miata-web",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MIATA website and portals (React + Vite)",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint .",
+    "test": "vitest run",
+    "format": "prettier --write \"src/**/*.{js,jsx,css}\" index.html vite.config.js eslint.config.js"
+  },
+  "dependencies": {
+    "lucide-react": "^1.56.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "react-router-dom": "^7.18.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@vitejs/plugin-react": "^6.1.2",
+    "eslint": "^10.12.0",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-react-refresh": "^0.5.7",
+    "globals": "^17.13.0",
+    "prettier": "^3.9.10",
+    "vite": "^8.3.4",
+    "vitest": "^5.0.4"
+  },
+  "engines": {
+    "node": ">=20.19"
+  }
+}

@@ -1,0 +1,120 @@
+/* MIATA portal design tokens — derived from the four dashboard reference images and the website's navy brand. */
+:root {
+  /* Brand */
+  --navy-900: #0a1f40;
+  --navy-800: #0e2a54; /* sidebar */
+  --navy-700: #163a6e;
+  --navy-600: #1d519b; /* website primary */
+  --gold-600: #b08a24;
+  --gold-500: #c9a033; /* admin / agent accent (reference images 1–2) */
+  --gold-100: #fbf3df;
+  --blue-700: #1d4ed8;
+  --blue-600: #2563eb; /* professor / student accent (reference images 3–4) */
+  --blue-100: #e3edff;
+
+  /* Role accent — set per dashboard via [data-role] (see layout.css) */
+  --accent: var(--blue-600);
+  --accent-strong: var(--blue-700);
+  --accent-soft: var(--blue-100);
+  --accent-contrast: #ffffff;
+
+  /* Surfaces & ink */
+  --bg: #f4f7fb;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --surface-3: #eef2f7;
+  --border: #e4e9f1;
+  --border-strong: #cfd8e5;
+  --ink: #0f2547; /* headings */
+  --text: #2f3d55;
+  --text-muted: #6b7a90;
+  --text-faint: #98a3b4;
+
+  /* Status (reserved for state — always paired with a label) */
+  --green-600: #15803d;
+  --green-100: #dcfce7;
+  --amber-700: #b45309;
+  --amber-100: #fef3c7;
+  --orange-600: #ea580c;
+  --orange-100: #ffedd5;
+  --red-600: #dc2626;
+  --red-100: #fee2e2;
+  --purple-600: #7c3aed;
+  --purple-100: #ede9fe;
+  --sky-600: #0369a1;
+  --sky-100: #e0f2fe;
+  --gray-600: #475569;
+  --gray-100: #eef2f6;
+
+  /* Tinted icon circles (stat cards) */
+  --tint-amber: #fdf3dc;
+  --tint-amber-ink: #c08a12;
+  --tint-blue: #e2ecff;
+  --tint-blue-ink: #2563eb;
+  --tint-green: #dcf5e7;
+  --tint-green-ink: #16a34a;
+  --tint-purple: #efe7ff;
+  --tint-purple-ink: #7c3aed;
+  --tint-orange: #ffedd5;
+  --tint-orange-ink: #ea580c;
+  --tint-rose: #ffe4ea;
+  --tint-rose-ink: #e11d48;
+
+  /* Charts (validated with the dataviz palette validator — see docs) */
+  --series-1: #2a78d6;
+  --series-2: #eb6834;
+  --series-3: #1baf7a;
+  --series-4: #eda100;
+  --seq-250: #86b6ef;
+  --seq-450: #2a78d6;
+  --seq-600: #184f95;
+  --grid: #edf1f6;
+
+  /* Shape & depth */
+  --radius-sm: 8px;
+  --radius: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 1px 2px rgba(15, 37, 71, 0.04);
+  --shadow: 0 1px 3px rgba(15, 37, 71, 0.06), 0 1px 2px rgba(15, 37, 71, 0.04);
+  --shadow-lg: 0 12px 32px rgba(15, 37, 71, 0.14);
+  --ring: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+
+  /* Type */
+  --font: 'Plus Jakarta Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --fs-xs: 0.75rem;
+  --fs-sm: 0.8125rem;
+  --fs-base: 0.875rem;
+  --fs-md: 1rem;
+  --fs-lg: 1.125rem;
+  --fs-xl: 1.375rem;
+  --fs-2xl: 1.75rem;
+  --fs-3xl: 2rem;
+
+  /* Layout */
+  --sidebar-w: 264px;
+  --topbar-h: 68px;
+  --gutter: 24px;
+}
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 16px;
+    --topbar-h: 60px;
+  }
+}
+
+/* ─── Role accents (match the reference image of each dashboard) ─── */
+[data-role='admin'],
+[data-role='agent'] {
+  --accent: var(--gold-500);
+  --accent-strong: var(--gold-600);
+  --accent-soft: var(--gold-100);
+  --accent-contrast: #ffffff;
+}
+
+[data-role='professor'],
+[data-role='student'] {
+  --accent: var(--blue-600);
+  --accent-strong: var(--blue-700);
+  --accent-soft: var(--blue-100);
+}

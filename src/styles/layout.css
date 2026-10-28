@@ -1,0 +1,544 @@
+/* Portal styles apply only inside the dashboards (<html class="lms">), never on the website. */
+:where(.lms) {
+  /* ─── App shell ─── */
+  .app {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  .app__main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .app__content {
+    flex: 1;
+    padding: 28px var(--gutter) 40px;
+    width: 100%;
+    max-width: 1600px;
+  }
+
+  /* ─── Sidebar ─── */
+  .sidebar {
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    background: var(--navy-800);
+    color: #c7d2e3;
+    overflow: hidden;
+    z-index: 40;
+    transition:
+      width 0.22s ease,
+      flex-basis 0.22s ease,
+      transform 0.22s ease;
+  }
+
+  .sidebar__brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 22px;
+    min-height: 84px;
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .sidebar__brand:hover {
+    text-decoration: none;
+  }
+
+  .sidebar__brand img {
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+  }
+
+  .sidebar__wordmark {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 1.9rem;
+    letter-spacing: 0.02em;
+    color: #fff;
+  }
+
+  /* Scrolls (wheel, touch, keyboard focus) when the menu is taller than the window, without showing a scrollbar. */
+  .sidebar__nav {
+    flex: 1;
+    overflow-y: auto;
+    scrollbar-width: none;
+    padding: 6px 14px 16px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .sidebar__nav::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 11px 14px;
+    margin-bottom: 4px;
+    border-radius: 10px;
+    color: #d3dcea;
+    font-weight: 500;
+    text-decoration: none;
+    transition:
+      background 0.15s,
+      color 0.15s;
+    border: 0;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .nav-item svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+  }
+
+  .nav-item:hover {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+    text-decoration: none;
+  }
+
+  .nav-item.active {
+    background: var(--accent);
+    color: var(--accent-contrast);
+    font-weight: 600;
+    box-shadow: 0 6px 16px color-mix(in srgb, var(--accent) 35%, transparent);
+  }
+
+  /* Menu group (e.g. Agent): the heading opens its sub-items like a dropdown. */
+  .nav-item--group.has-active {
+    background: rgba(255, 255, 255, 0.07);
+    color: #fff;
+  }
+
+  .nav-item .nav-item__chevron {
+    width: 16px;
+    height: 16px;
+    margin-left: auto;
+    opacity: 0.7;
+    transition: transform 0.2s ease;
+  }
+
+  .nav-item--group.is-open .nav-item__chevron {
+    transform: rotate(180deg);
+  }
+
+  /* Height animates open/closed; hidden once closed (after the animation) so the links cannot be reached. */
+  .nav-group__panel {
+    display: grid;
+    grid-template-rows: 0fr;
+    visibility: hidden;
+    transition:
+      grid-template-rows 0.2s ease,
+      visibility 0s linear 0.2s;
+  }
+
+  .nav-group__panel.is-open {
+    grid-template-rows: 1fr;
+    visibility: visible;
+    transition:
+      grid-template-rows 0.2s ease,
+      visibility 0s;
+  }
+
+  .nav-group__panel > .nav-sub {
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .nav-group__panel.is-open > .nav-sub {
+    margin-bottom: 6px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-group__panel,
+    .nav-item .nav-item__chevron {
+      transition: none;
+    }
+  }
+
+  .nav-sub {
+    margin-left: 34px;
+    padding-left: 12px;
+    border-left: 1px solid rgba(255, 255, 255, 0.12);
+  }
+
+  .nav-sub .nav-item {
+    padding: 8px 12px;
+    font-size: var(--fs-sm);
+  }
+
+  .sidebar__footer {
+    padding: 12px 14px 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Crest watermark behind the lower sidebar (agent reference image), shown on every dashboard */
+  .sidebar__watermark {
+    position: absolute;
+    left: 50%;
+    bottom: 70px;
+    width: 190px;
+    transform: translateX(-50%);
+    opacity: 0.06;
+    filter: grayscale(1) brightness(2.2);
+    pointer-events: none;
+  }
+
+  .sidebar-overlay {
+    display: none;
+  }
+
+  /* ─── Topbar ─── */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    height: var(--topbar-h);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 0 var(--gutter);
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .topbar__menu {
+    display: inline-grid;
+    flex-shrink: 0;
+  }
+
+  .topbar__search {
+    position: relative;
+    width: min(420px, 100%);
+  }
+
+  .topbar__search input {
+    width: 100%;
+    height: 42px;
+    padding: 0 14px 0 42px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface-2);
+  }
+
+  .topbar__search input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: var(--ring);
+    background: #fff;
+  }
+
+  .topbar__search > svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+  }
+
+  .topbar__divider {
+    width: 1px;
+    height: 32px;
+    background: var(--border);
+  }
+
+  .icon-btn {
+    position: relative;
+    display: inline-grid;
+    place-items: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+    border: 0;
+    background: transparent;
+    color: var(--ink);
+  }
+
+  .icon-btn:hover {
+    background: var(--surface-3);
+  }
+
+  .icon-btn svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .icon-btn__badge {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--red-600);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    border: 2px solid #fff;
+  }
+
+  .user-menu__trigger {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 4px 8px 4px 4px;
+    border: 0;
+    border-radius: 12px;
+    background: transparent;
+    text-align: left;
+  }
+
+  .user-menu__trigger:hover {
+    background: var(--surface-3);
+  }
+
+  .user-menu__name {
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.2;
+  }
+
+  .user-menu__role {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+    text-transform: capitalize;
+  }
+
+  /* ─── Dropdowns (notifications, user menu, search results) ─── */
+  .dropdown {
+    position: relative;
+  }
+
+  .dropdown__panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 8px);
+    min-width: 220px;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-lg);
+    padding: 6px;
+    z-index: 60;
+  }
+
+  .dropdown__panel--left {
+    left: 0;
+    right: auto;
+  }
+
+  .dropdown__item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 9px 12px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--text);
+    text-align: left;
+    text-decoration: none;
+  }
+
+  .dropdown__item:hover {
+    background: var(--surface-3);
+    text-decoration: none;
+  }
+
+  .dropdown__item svg {
+    width: 18px;
+    height: 18px;
+    color: var(--text-muted);
+  }
+
+  .dropdown__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .dropdown__section {
+    padding: 6px 10px 2px;
+    font-size: var(--fs-xs);
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+
+  .notifications {
+    width: min(380px, calc(100vw - 32px));
+    max-height: 460px;
+    overflow-y: auto;
+  }
+
+  .notification {
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    color: var(--text);
+    text-decoration: none;
+    width: 100%;
+    border: 0;
+    background: none;
+    text-align: left;
+  }
+
+  .notification:hover {
+    background: var(--surface-2);
+    text-decoration: none;
+  }
+
+  .notification__dot {
+    margin-top: 6px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--accent);
+    flex-shrink: 0;
+  }
+
+  .notification--read .notification__dot {
+    background: transparent;
+  }
+
+  .notification__title {
+    font-weight: 600;
+    color: var(--ink);
+    font-size: var(--fs-sm);
+  }
+
+  .notification__meta {
+    font-size: var(--fs-xs);
+    color: var(--text-muted);
+  }
+
+  /* ─── Responsive: off-canvas sidebar below 1024px ─── */
+  @media (min-width: 1025px) {
+    .app--sidebar-collapsed .sidebar {
+      width: 76px;
+      flex-basis: 76px;
+    }
+
+    .sidebar--collapsed .sidebar__brand {
+      justify-content: center;
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+
+    .sidebar--collapsed .sidebar__brand img {
+      width: 46px;
+      height: 46px;
+    }
+
+    .sidebar--collapsed .sidebar__wordmark,
+    .sidebar--collapsed .nav-item__label,
+    .sidebar--collapsed .nav-item__chevron {
+      display: none;
+    }
+
+    .sidebar--collapsed .sidebar__nav {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+
+    .sidebar--collapsed .nav-item {
+      justify-content: center;
+      padding-right: 10px;
+      padding-left: 10px;
+    }
+
+    .sidebar--collapsed .sidebar__footer {
+      padding-right: 8px;
+      padding-left: 8px;
+    }
+
+    .sidebar--collapsed .nav-group__panel {
+      display: none;
+    }
+
+    .sidebar--collapsed .sidebar__watermark {
+      width: 64px;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .sidebar {
+      position: fixed;
+      left: 0;
+      top: 0;
+      transform: translateX(-100%);
+      width: var(--sidebar-w);
+      flex-basis: var(--sidebar-w);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .app--nav-open .sidebar {
+      transform: none;
+    }
+
+    .app--nav-open .sidebar-overlay {
+      display: block;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 31, 64, 0.45);
+      z-index: 35;
+    }
+  }
+
+  @media (max-width: 720px) {
+    .topbar__search {
+      display: none;
+    }
+
+    .user-menu__text,
+    .topbar__divider {
+      display: none;
+    }
+
+    .app__content {
+      padding-top: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sidebar {
+      transition: none;
+    }
+  }
+}
+
+/* The website's chat launcher (collect.chat, see website/theme/themeAssets.js) stays in <body> after signing in;
+   keep it off every dashboard. !important beats the inline display the launcher sets on its frame. */
+:where(.lms) {
+  #chat-bot-launcher-container,
+  #chat-bot-frame-container {
+    display: none !important;
+  }
+}
