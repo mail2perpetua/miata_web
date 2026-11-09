@@ -8,9 +8,9 @@ export const CONTACT = {
   admissionsEmail: 'admissions@miataedu.org',
   address: 'Level 3, Queen St, Melbourne Victoria 3000',
   // Floating WhatsApp / call buttons
-  whatsapp: '917603913498',
+  whatsapp: '61468474480', // wa.me needs digits only, no "+"
   whatsappMessage: 'Hello, I would like to know more details.',
-  callback: '917603913498',
+  callback: '+61468474480',
 };
 
 export const MAIN_MENU = [

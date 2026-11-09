@@ -1,13 +1,14 @@
 import { useState } from 'react';
-import { Mail, Phone, RefreshCw, Send } from 'lucide-react';
+import { FileText, Mail, Phone, RefreshCw, Send } from 'lucide-react';
 import { Alert, Button, InfoList, Modal, PageLoader, SelectField, StatusBadge, TextArea, TextField } from '@/components';
 import { useApiAction } from '@/hooks/useApiAction';
 import { useFetch } from '@/hooks/useFetch';
 import { api } from '@/services/api';
 import { formatDate, formatDateTime } from '@/utils/format';
 import { ENQUIRY_STATUSES } from './enquiryStatuses';
+import { OfferStatusBadge } from './OfferLetterModal';
 
-export function EnquiryDetailModal({ enquiryId, onClose, onChange }) {
+export function EnquiryDetailModal({ enquiryId, onClose, onChange, onOfferLetter }) {
   const state = useFetch(`/admin/enquiries/${enquiryId}`);
   const { run, busy } = useApiAction();
   const [note, setNote] = useState('');
@@ -60,6 +61,8 @@ export function EnquiryDetailModal({ enquiryId, onClose, onChange }) {
           {e.emailStatus === 'skipped' && e.source === 'website' && (
             <Alert tone="info">No notification email was sent: {e.emailError || 'email is not configured'}.</Alert>
           )}
+
+          {onOfferLetter && <OfferLetterCallout offer={e.offerLetter} onOpen={() => onOfferLetter(e.id)} />}
 
           <InfoList
             items={[
@@ -157,5 +160,37 @@ export function EnquiryDetailModal({ enquiryId, onClose, onChange }) {
         </div>
       )}
     </Modal>
+  );
+}
+
+/** The enquiry's conditional offer letter: its status and the way into preparing, previewing or sending it. */
+function OfferLetterCallout({ offer, onOpen }) {
+  const status = offer?.status ?? 'pending';
+  let text = 'Prepare a conditional offer letter from this enquiry, preview the PDF and e-mail it to the student.';
+  if (offer?.status === 'sent') text = `${offer.referenceNumber} · e-mailed ${formatDateTime(offer.sentAt)} to ${offer.sentTo}`;
+  else if (offer) {
+    const failed = offer.emailStatus === 'failed' || offer.emailStatus === 'skipped';
+    text = `${offer.referenceNumber} · dated ${formatDate(offer.letterDate)} · ${failed ? 'the last e-mail attempt failed' : 'not sent yet'}`;
+  }
+  return (
+    <div className="offer-callout">
+      <span className="offer-callout__icon" aria-hidden="true">
+        <FileText />
+      </span>
+      <div className="offer-callout__body">
+        <div className="offer-callout__title">
+          Conditional offer letter <OfferStatusBadge status={status} />
+        </div>
+        <div className="offer-callout__text">{text}</div>
+      </div>
+      <Button
+        size="sm"
+        variant={status === 'sent' ? 'secondary' : 'primary'}
+        icon={status === 'pending' ? FileText : Send}
+        onClick={onOpen}
+      >
+        {status === 'pending' ? 'Prepare offer letter' : status === 'sent' ? 'View offer letter' : 'Preview & send'}
+      </Button>
+    </div>
   );
 }

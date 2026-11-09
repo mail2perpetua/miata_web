@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, Plus } from 'lucide-react';
+import { FileText, Mail, Plus } from 'lucide-react';
 import {
   Button,
   Card,
@@ -21,6 +21,14 @@ import { api } from '@/services/api';
 import { formatDate } from '@/utils/format';
 import { EnquiryDetailModal } from './EnquiryDetailModal';
 import { ENQUIRY_STATUSES } from './enquiryStatuses';
+import { OFFER_STATUS_OPTIONS } from './offerLetter';
+import { OfferLetterModal, OfferStatusBadge } from './OfferLetterModal';
+
+const OFFER_ACTION = {
+  pending: 'Prepare conditional offer letter',
+  generated: 'Preview and send offer letter',
+  sent: 'View offer letter',
+};
 
 const MANUAL_FIELDS = [
   { name: 'name', label: 'Name', required: true },
@@ -38,6 +46,8 @@ export default function EnquiriesPage() {
   const counts = useFetch('/admin/enquiries/counts');
   const [creating, setCreating] = useCreateDialog();
   const [openId, setOpenId] = useState(null);
+  // The offer letter dialog; fromDetail reopens the enquiry when it closes.
+  const [offerFor, setOfferFor] = useState(null);
   const refresh = () => {
     state.reload();
     counts.reload();
@@ -79,6 +89,13 @@ export default function EnquiriesPage() {
               { value: 'website', label: 'Website form' },
               { value: 'admin', label: 'Added by admin' },
             ]}
+          />
+          <FilterSelect
+            label="Offer letter"
+            allLabel="All offer letters"
+            value={query.offerStatus}
+            onChange={(offerStatus) => update({ offerStatus })}
+            options={OFFER_STATUS_OPTIONS}
           />
           <label className="row" style={{ gap: 6, fontSize: 'var(--fs-sm)' }}>
             From
@@ -159,6 +176,26 @@ export default function EnquiriesPage() {
                 render: (e) => (e.source === 'website' ? <StatusBadge status={e.emailStatus} /> : <span className="muted">—</span>),
               },
               { key: 'status', header: 'Status', sortKey: 'status', render: (e) => <StatusBadge status={e.status} /> },
+              {
+                key: 'offerStatus',
+                header: 'Offer letter',
+                render: (e) => (
+                  <span className="offer-cell">
+                    <OfferStatusBadge status={e.offerStatus} />
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      icon={FileText}
+                      tooltip={OFFER_ACTION[e.offerStatus] ?? OFFER_ACTION.pending}
+                      aria-label={`${OFFER_ACTION[e.offerStatus] ?? OFFER_ACTION.pending} for ${e.name}`}
+                      onClick={(ev) => {
+                        ev.stopPropagation();
+                        setOfferFor({ id: e.id });
+                      }}
+                    />
+                  </span>
+                ),
+              },
             ]}
             empty={
               <EmptyState icon={Mail} title="No enquiries" message="Enquiries submitted through the website contact form appear here." />
@@ -168,7 +205,27 @@ export default function EnquiriesPage() {
         <Pagination meta={state.meta} onPage={setPage} noun="enquiries" />
       </Card>
 
-      {openId && <EnquiryDetailModal enquiryId={openId} onClose={() => setOpenId(null)} onChange={refresh} />}
+      {openId && (
+        <EnquiryDetailModal
+          enquiryId={openId}
+          onClose={() => setOpenId(null)}
+          onChange={refresh}
+          onOfferLetter={(id) => {
+            setOpenId(null);
+            setOfferFor({ id, fromDetail: true });
+          }}
+        />
+      )}
+      {offerFor && (
+        <OfferLetterModal
+          enquiryId={offerFor.id}
+          onChange={refresh}
+          onClose={() => {
+            setOfferFor(null);
+            if (offerFor.fromDetail) setOpenId(offerFor.id);
+          }}
+        />
+      )}
       <FormModal
         open={creating}
         title="Add enquiry"
