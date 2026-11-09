@@ -77,7 +77,7 @@ export function AccountActions({ role, person, onChange, extra }) {
             type: 'password',
             required: true,
             span: true,
-            hint: 'They are signed out everywhere and must choose a new password at next sign-in.',
+            hint: 'They are signed out everywhere and then sign in with this password.',
           },
         ]}
         initialValues={{ temporaryPassword: '' }}

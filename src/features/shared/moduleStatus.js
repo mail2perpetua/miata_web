@@ -4,8 +4,8 @@ import { formatDate } from '@/utils/format';
 /** How far the teaching of a module has got, as its professors set it (badge colours come from StatusBadge). */
 export const MODULE_STATUSES = [
   { value: 'not_started', label: 'Not Started', hint: 'Teaching has not begun', icon: Circle },
-  { value: 'in_progress', label: 'In Progress', hint: 'Sessions are under way', icon: CircleDot },
-  { value: 'completed', label: 'Completed', hint: 'Everything has been taught', icon: CircleCheck },
+  { value: 'in_progress', label: 'In Progress', hint: 'Sessions are underway', icon: CircleDot },
+  { value: 'completed', label: 'Completed', hint: 'All teaching activities are completed', icon: CircleCheck },
 ];
 
 export const moduleStatusLabel = (value) => MODULE_STATUSES.find((s) => s.value === value)?.label ?? value;

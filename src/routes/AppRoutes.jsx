@@ -77,6 +77,8 @@ const ReviewPage = page(() => import('@/features/professor/ReviewPage'));
 const CompletedReworkPage = page(() => import('@/features/professor/CompletedReworkPage'));
 const ProfessorMeetingsPage = page(() => import('@/features/professor/MeetingsPage'));
 const ProfessorTimetablePage = page(() => import('@/features/professor/TimetablePage'));
+const ProfessorModulesPage = page(() => import('@/features/professor/ModulesPage'));
+const ProfessorModulePage = page(() => import('@/features/professor/ModulePage'));
 
 // Student
 const StudentDashboard = page(() => import('@/features/student/StudentDashboard'));
@@ -165,6 +167,8 @@ export function AppRoutes() {
             <Route path="professor" element={<RequireAuth role="professor" />}>
               <Route element={<DashboardLayout />}>
                 <Route index element={<ProfessorDashboard />} />
+                <Route path="modules" element={<ProfessorModulesPage />} />
+                <Route path="modules/:moduleId" element={<ProfessorModulePage />} />
                 <Route path="students" element={<ProfessorStudentsPage />} />
                 <Route path="assignments" element={<ProfessorAssignmentsPage />} />
                 <Route path="assignments/:assignmentId" element={<ProfessorAssignmentPage />} />

@@ -16,11 +16,6 @@ const INTRO = {
     title: 'Congratulations on completing your course!',
     text: 'For your security, choose a new password to continue. Your completion record and profile remain available.',
   },
-  account_created: {
-    title: 'Welcome to MIATA',
-    text: 'Your account was created with a temporary password. Choose your own password to continue.',
-  },
-  admin_request: { title: 'Choose a new password', text: 'An administrator has asked you to set a new password.' },
 };
 // The link in the welcome / set-password e-mail.
 const SETUP_INTRO = {

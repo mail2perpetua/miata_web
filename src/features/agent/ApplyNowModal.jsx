@@ -55,7 +55,7 @@ export function ApplyNowModal({ open, onClose, onApplied }) {
             type: 'password',
             required: true,
             span: true,
-            hint: 'E-mail is not set up, so give this to the student in person. They must change it at first sign-in.',
+            hint: 'E-mail is not set up, so give this to the student in person. They sign in with it directly.',
           },
         ]
       : []),

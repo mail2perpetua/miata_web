@@ -76,7 +76,7 @@ export function PersonFormModal({ open, role, person, defaults, onClose, onSaved
             name: 'temporaryPassword',
             label: 'Temporary password (optional)',
             type: 'password',
-            hint: 'Only if you will hand it over in person. It is never e-mailed; they must change it at first sign-in.',
+            hint: 'Only if you will hand it over in person. It is never e-mailed; they sign in with it directly.',
           },
         ]
       : []),

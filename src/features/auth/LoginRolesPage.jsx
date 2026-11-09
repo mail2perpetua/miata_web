@@ -16,11 +16,11 @@ export default function LoginRolesPage() {
 
   return (
     <WebsitePage title="Login">
-      <PageHeader title="Login" variant="two" />
+      {/* <PageHeader title="Login" variant="two" /> */}
       <section className="login-page login-roles">
         <div className="container">
           {message && <AuthNotice>{message}</AuthNotice>}
-          <SectionTitle tagline="Choose your portal" title="Login to MIATA" centered />
+          <SectionTitle title="Login to MIATA" centered />
           <div className="row login-roles__list">
             {LOGIN_ROLES.map((role, i) => {
               const info = ROLE_INFO[role];

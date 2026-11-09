@@ -21,11 +21,9 @@ import {
   EmptyState,
   ErrorState,
   PageHeader,
-  PersonCell,
   ProgressBar,
   StatCard,
   StatusBadge,
-  ViewAll,
 } from '@/components';
 import { useAuth } from '@/features/auth/AuthContext';
 import { UpcomingMeetingsCard } from '@/features/shared/MeetingWidgets';
@@ -145,7 +143,7 @@ export default function ProfessorDashboard() {
         }
       />
       <AsyncContent state={state}>
-        {({ stats, batches, recentStudents, recentAssignments, upcomingDeadlines, recentActivity, upcomingMeetings }) => (
+        {({ stats, batches, upcomingDeadlines, recentActivity, upcomingMeetings }) => (
           <div className="stack">
             <div className="dash-grid dash-grid--stats4">
               <StatCard
@@ -203,69 +201,6 @@ export default function ProfessorDashboard() {
                     />
                   )
                 )}
-                <div className="dash-grid dash-grid--pair">
-                  <Card title="Recent Students" icon={Users} action={<ViewAll to="/professor/students" />} flush>
-                    <DataTable
-                      compact
-                      rows={recentStudents}
-                      rowKey="enrolmentId"
-                      columns={[
-                        { key: 'name', header: 'Student Name', render: (s) => <PersonCell name={s.fullName} sub={s.courseTitle} /> },
-                        { key: 'status', header: 'Status', render: (s) => <StatusBadge status={s.isActive ? s.status : 'inactive'} /> },
-                        {
-                          key: 'last',
-                          header: 'Last Activity',
-                          render: (s) => <span className="nowrap">{formatDate(s.lastActivity)}</span>,
-                        },
-                      ]}
-                      empty={
-                        <EmptyState
-                          icon={Users}
-                          title="No students yet"
-                          message="Students appear once they are enrolled in your courses."
-                        />
-                      }
-                    />
-                  </Card>
-                  <Card title="My Assignments" icon={FileText} action={<ViewAll to="/professor/assignments" />} flush>
-                    <DataTable
-                      compact
-                      rows={recentAssignments}
-                      columns={[
-                        {
-                          key: 'title',
-                          header: 'Assignment Title',
-                          render: (a) => (
-                            <span>
-                              <Link to={`/professor/assignments/${a.id}`} className="cell-person__name">
-                                {a.title}
-                              </Link>
-                              <span className="cell-person__sub" style={{ display: 'block' }}>
-                                {a.courseTitle}
-                              </span>
-                            </span>
-                          ),
-                        },
-                        {
-                          key: 'due',
-                          header: 'Due Date',
-                          render: (a) => <span className="nowrap">{a.dueAt ? formatDate(a.dueAt) : '—'}</span>,
-                        },
-                        {
-                          key: 'status',
-                          header: 'Status',
-                          render: (a) =>
-                            a.pendingCount > 0 ? (
-                              <StatusBadge status="pending" label={`${a.pendingCount} to review`} />
-                            ) : (
-                              <StatusBadge status="completed" label="Up to date" tone="green" />
-                            ),
-                        },
-                      ]}
-                      empty={<EmptyState icon={FileText} title="No assignments" />}
-                    />
-                  </Card>
-                </div>
                 <Card title="Recent Activity" icon={Clock} flush>
                   <DataTable
                     compact

@@ -58,6 +58,7 @@ export const NAVIGATION = {
   ],
   professor: [
     { to: '/professor', label: 'Dashboard', icon: House, end: true },
+    { to: '/professor/modules', label: 'Modules', icon: BookOpen },
     { to: '/professor/students', label: 'Students List', icon: Users },
     { to: '/professor/assignments', label: 'Assignments', icon: FileText },
     { to: '/professor/timetable', label: 'Timetable', icon: CalendarDays },
