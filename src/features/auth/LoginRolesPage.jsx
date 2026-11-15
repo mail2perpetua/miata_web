@@ -50,9 +50,6 @@ export default function LoginRolesPage() {
               );
             })}
           </div>
-          <p className="login-roles__register">
-            New student? <Link to="/register">Create your student account</Link>
-          </p>
         </div>
       </section>
     </WebsitePage>

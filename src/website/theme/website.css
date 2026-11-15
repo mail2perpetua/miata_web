@@ -136,14 +136,12 @@
 }
 
 .login-page__switch a,
-.login-portal__help a,
-.login-roles__register a {
+.login-portal__help a {
   color: var(--eduact-secondary);
 }
 
 .login-page__switch a:hover,
-.login-portal__help a:hover,
-.login-roles__register a:hover {
+.login-portal__help a:hover {
   color: var(--eduact-black);
 }
 
@@ -187,14 +185,6 @@
 
 .login-roles__card .service-two__text {
   min-height: 78px;
-}
-
-.login-roles__register {
-  margin: 0;
-  text-align: center;
-  font-size: 18px;
-  font-weight: 600;
-  color: var(--eduact-black);
 }
 
 /* ─── /login/:role — portal summary beside the form ─── */

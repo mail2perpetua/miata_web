@@ -179,10 +179,6 @@ function PortalInfo({ info }) {
           </li>
         ))}
       </ul>
-      <p className="login-portal__help">
-        Accounts for this portal are created by the MIATA administration. Forgotten your password?{' '}
-        <Link to="/forgot-password">Reset it here</Link>.
-      </p>
     </div>
   );
 }
