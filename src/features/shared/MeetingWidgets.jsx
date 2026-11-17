@@ -25,7 +25,7 @@ export function MeetingStateBadge({ meeting }) {
   return <StatusBadge status={meetingState(meeting)} />;
 }
 
-/** Opens the Google Meet / Zoom link in a new tab. Hidden once the class has ended or was cancelled. */
+/** Opens the Google Meet / Zoom / Teams link in a new tab. Hidden once the class has ended or was cancelled. */
 export function JoinMeetingButton({ meeting, size = 'sm' }) {
   const state = meetingState(meeting);
   if (!meeting.meetingUrl || state === 'ended' || state === 'cancelled') return null;

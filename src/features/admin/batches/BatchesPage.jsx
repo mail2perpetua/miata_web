@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Layers, Pencil, Plus } from 'lucide-react';
+import { Layers, Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Button,
@@ -17,6 +17,9 @@ import {
 import { useFetch } from '@/hooks/useFetch';
 import { useCreateDialog, useListQuery } from '@/hooks/useListQuery';
 import { dateRange } from '@/utils/format';
+import { actionsColumn } from '../shared/columns';
+import { RowActions } from '../shared/RowActions';
+import { useDeleteAction } from '../shared/useDeleteAction';
 import { BatchFormModal } from './BatchFormModal';
 
 export default function BatchesPage() {
@@ -27,6 +30,15 @@ export default function BatchesPage() {
   const professors = useFetch('/admin/lookups/professors');
   const [creating, setCreating] = useCreateDialog();
   const [editing, setEditing] = useState(null);
+  const { remove, deleting } = useDeleteAction();
+  const confirmDelete = (b) =>
+    remove({
+      path: `/admin/batches/${b.id}`,
+      title: `Delete “${b.name}”?`,
+      message: 'The batch is deleted permanently. Its courses and professors are not affected.',
+      success: 'Batch deleted',
+      onDone: state.reload,
+    });
   const filtered = query.search || query.status || query.courseId || query.professorId;
 
   return (
@@ -135,23 +147,16 @@ export default function BatchesPage() {
                 render: (b) => <span className="num">{b.pendingReviews}</span>,
               },
               { key: 'status', header: 'Status', render: (b) => <StatusBadge status={b.isActive ? 'active' : 'inactive'} /> },
-              {
-                key: 'actions',
-                header: <span className="sr-only">Actions</span>,
-                align: 'right',
-                render: (b) => (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={Pencil}
-                    aria-label={`Edit ${b.name}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditing(b);
-                    }}
-                  />
-                ),
-              },
+              actionsColumn((b) => (
+                <RowActions
+                  label={b.name}
+                  onView={() => navigate(`/admin/batches/${b.id}`)}
+                  onEdit={() => setEditing(b)}
+                  onDelete={() => confirmDelete(b)}
+                  deleteDisabled={b.studentCount || b.batchAssignmentCount ? 'Has students or assignments — deactivate it instead' : null}
+                  deleting={deleting(`/admin/batches/${b.id}`)}
+                />
+              )),
             ]}
             empty={
               <EmptyState

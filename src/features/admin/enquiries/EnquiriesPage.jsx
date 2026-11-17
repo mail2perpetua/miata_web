@@ -6,6 +6,8 @@ import {
   DataTable,
   EmptyState,
   ErrorState,
+  Modal,
+  PageLoader,
   FilterSelect,
   FormModal,
   PageHeader,
@@ -23,6 +25,9 @@ import { EnquiryDetailModal } from './EnquiryDetailModal';
 import { ENQUIRY_STATUSES } from './enquiryStatuses';
 import { OFFER_STATUS_OPTIONS } from './offerLetter';
 import { OfferLetterModal, OfferStatusBadge } from './OfferLetterModal';
+import { actionsColumn } from '../shared/columns';
+import { RowActions } from '../shared/RowActions';
+import { useDeleteAction } from '../shared/useDeleteAction';
 
 const OFFER_ACTION = {
   pending: 'Prepare conditional offer letter',
@@ -48,6 +53,16 @@ export default function EnquiriesPage() {
   const [openId, setOpenId] = useState(null);
   // The offer letter dialog; fromDetail reopens the enquiry when it closes.
   const [offerFor, setOfferFor] = useState(null);
+  const [editingId, setEditingId] = useState(null);
+  const { remove, deleting } = useDeleteAction();
+  const confirmDelete = (e) =>
+    remove({
+      path: `/admin/enquiries/${e.id}`,
+      title: `Delete the enquiry from ${e.name}?`,
+      message: `The enquiry, its follow-up notes${e.offerStatus !== 'pending' ? ' and its conditional offer letter' : ''} are deleted permanently.`,
+      success: 'Enquiry deleted',
+      onDone: refresh,
+    });
   const refresh = () => {
     state.reload();
     counts.reload();
@@ -196,6 +211,15 @@ export default function EnquiriesPage() {
                   </span>
                 ),
               },
+              actionsColumn((e) => (
+                <RowActions
+                  label={`the enquiry from ${e.name}`}
+                  onView={() => setOpenId(e.id)}
+                  onEdit={() => setEditingId(e.id)}
+                  onDelete={() => confirmDelete(e)}
+                  deleting={deleting(`/admin/enquiries/${e.id}`)}
+                />
+              )),
             ]}
             empty={
               <EmptyState icon={Mail} title="No enquiries" message="Enquiries submitted through the website contact form appear here." />
@@ -226,6 +250,7 @@ export default function EnquiriesPage() {
           }}
         />
       )}
+      {editingId && <EditEnquiryModal enquiryId={editingId} onClose={() => setEditingId(null)} onSaved={refresh} />}
       <FormModal
         open={creating}
         title="Add enquiry"
@@ -240,5 +265,41 @@ export default function EnquiriesPage() {
         onClose={() => setCreating(false)}
       />
     </>
+  );
+}
+
+/** Correct an enquirer's details (e.g. a mistyped e-mail before sending an offer letter). Status and notes are unchanged. */
+function EditEnquiryModal({ enquiryId, onClose, onSaved }) {
+  const toast = useToast();
+  const state = useFetch(`/admin/enquiries/${enquiryId}`);
+  const e = state.data;
+  if (!e) {
+    return (
+      <Modal open title="Edit enquiry" onClose={onClose}>
+        {state.error ? <ErrorState error={state.error} onRetry={state.reload} /> : <PageLoader />}
+      </Modal>
+    );
+  }
+  return (
+    <FormModal
+      open
+      title={`Edit enquiry from ${e.name}`}
+      submitLabel="Save changes"
+      fields={MANUAL_FIELDS}
+      initialValues={{
+        name: e.name,
+        email: e.email,
+        phone: e.phone ?? '',
+        courseInterest: e.courseInterest ?? '',
+        subject: e.subject ?? '',
+        message: e.message,
+      }}
+      onSubmit={async (values) => {
+        await api.put(`/admin/enquiries/${enquiryId}`, { ...values, phone: values.phone || null });
+        toast.success('Enquiry updated');
+        onSaved();
+      }}
+      onClose={onClose}
+    />
   );
 }

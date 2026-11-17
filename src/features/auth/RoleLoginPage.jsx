@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom';
 import { useForm } from '@/hooks/useForm';
 import * as v from '@/utils/validation';
-import { PageHeader } from '@/website/layout/PageHeader';
 import { WebsitePage } from '@/website/layout/WebsitePage';
 import { FormMessage } from '@/website/sections/FormMessage';
 import { AuthArea, AuthCheckbox, AuthField, AuthNotice, AuthSubmit } from './AuthForm';
@@ -54,7 +53,6 @@ function RoleLogin({ role }) {
   const flash = location.state?.message;
   return (
     <WebsitePage title={`${info.label} Login`}>
-      <PageHeader title={`${info.label} Login`} variant="two" />
       <AuthArea
         notice={
           <AuthNotice>

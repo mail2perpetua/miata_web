@@ -609,6 +609,12 @@
     color: var(--text-muted);
   }
 
+  /* Calculated values (e.g. a class's duration): shaded like a disabled field, but the text stays readable. */
+  .input[readonly] {
+    background: var(--surface-3);
+    cursor: default;
+  }
+
   .checkbox {
     display: inline-flex;
     align-items: flex-start;

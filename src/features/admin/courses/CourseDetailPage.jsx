@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { BookOpen, CircleCheck, ClipboardList, Pencil, Power, Stethoscope, Users, Video } from 'lucide-react';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { BookOpen, CircleCheck, ClipboardList, Pencil, Power, Stethoscope, Trash2, Users, Video } from 'lucide-react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { AsyncContent, Button, PageHeader, StatCard, StatusBadge, Tabs, useConfirm } from '@/components';
 import { useApiAction } from '@/hooks/useApiAction';
 import { useFetch } from '@/hooks/useFetch';
@@ -12,6 +12,7 @@ import { CourseProfessorsTab } from './CourseProfessorsTab';
 import { CourseStudentsTab } from './CourseStudentsTab';
 import { CourseTimetableTab } from './CourseTimetableTab';
 import { CurriculumTab } from './CurriculumTab';
+import { useDeleteAction } from '../shared/useDeleteAction';
 
 export default function CourseDetailPage() {
   const { courseId } = useParams();
@@ -22,6 +23,17 @@ export default function CourseDetailPage() {
   const [editing, setEditing] = useState(false);
   const confirm = useConfirm();
   const { run, busy } = useApiAction();
+  const navigate = useNavigate();
+  const { remove, deleting } = useDeleteAction();
+  const deleteCourse = (course) =>
+    remove({
+      path: `/admin/courses/${course.id}`,
+      title: `Delete “${course.title}”?`,
+      message:
+        'The course, its curriculum (modules and lessons), timetable and teaching assignments are deleted permanently. A course with enrolments, videos or assignments cannot be deleted — deactivate it instead.',
+      success: 'Course deleted',
+      onDone: () => navigate('/admin/courses'),
+    });
 
   const toggleStatus = async (course) => {
     const activating = !course.isActive;
@@ -69,6 +81,14 @@ export default function CourseDetailPage() {
                   onClick={() => toggleStatus(course)}
                 >
                   {course.isActive ? 'Deactivate' : 'Activate'}
+                </Button>
+                <Button
+                  variant="ghost-danger"
+                  icon={Trash2}
+                  loading={deleting(`/admin/courses/${course.id}`)}
+                  onClick={() => deleteCourse(course)}
+                >
+                  Delete
                 </Button>
               </>
             }

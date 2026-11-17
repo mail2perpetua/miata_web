@@ -48,7 +48,7 @@ export default function MeetingsPage() {
     <>
       <PageHeader
         title="Online Classes"
-        subtitle="Schedule Google Meet or Zoom classes for your batches. Students are e-mailed the details and see the link on their dashboard."
+        subtitle="Schedule Google Meet, Zoom or Microsoft Teams classes for your batches. Students are e-mailed the details and see the link on their dashboard."
       />
       <Tabs
         label="Online classes"
@@ -167,7 +167,7 @@ export default function MeetingsPage() {
                   query.when === 'upcoming'
                     ? batches.data?.length === 0
                       ? 'You are not assigned to a batch yet. An administrator assigns professors to batches.'
-                      : 'Schedule a Google Meet or Zoom class for one of your batches.'
+                      : 'Schedule a Google Meet, Zoom or Teams class for one of your batches.'
                     : undefined
                 }
               />

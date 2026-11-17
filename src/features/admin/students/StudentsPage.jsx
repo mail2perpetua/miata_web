@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Plus, Users } from 'lucide-react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useSearchParams } from 'react-router-dom';
 import {
   Button,
   Card,
@@ -12,11 +13,17 @@ import {
   PersonCell,
   SearchInput,
   StatusBadge,
+  Tabs,
 } from '@/components';
 import { useFetch } from '@/hooks/useFetch';
 import { useCreateDialog, useListQuery } from '@/hooks/useListQuery';
 import { formatDate } from '@/utils/format';
+import { actionsColumn } from '../shared/columns';
+import { EditPersonModal } from '../shared/EditPersonModal';
 import { PersonFormModal } from '../shared/PersonFormModal';
+import { RowActionsMenu } from '../shared/RowActionsMenu';
+import { useDeleteAction } from '../shared/useDeleteAction';
+import { ApplicationsTab } from './applications/ApplicationsTab';
 
 const STATUS_OPTIONS = [
   { value: 'active', label: 'Active' },
@@ -25,26 +32,73 @@ const STATUS_OPTIONS = [
   { value: 'inactive', label: 'Inactive' },
 ];
 
+/**
+ * Students: the student list, and Online Applications (the website's Apply Now form). Approving an application adds the
+ * applicant to the student list. The tab is in the URL (?tab=applications); switching tabs clears the other tab's filters.
+ */
 export default function StudentsPage() {
+  const [params, setParams] = useSearchParams();
+  const tab = params.get('tab') === 'applications' ? 'applications' : 'students';
+  const counts = useFetch('/admin/applications/counts');
+  const [creating, setCreating] = useCreateDialog();
+  const pending = counts.data?.pending;
+
+  return (
+    <>
+      <PageHeader
+        title="Students"
+        subtitle={
+          tab === 'applications'
+            ? 'Applications sent with the website’s Apply Now form. Approve an application to add the applicant to the student list.'
+            : 'Manage students, their batches, enrolments, progress and referral source.'
+        }
+        actions={
+          tab === 'students' && (
+            <Button icon={Plus} onClick={() => setCreating(true)}>
+              Add Student
+            </Button>
+          )
+        }
+      />
+      <Tabs
+        label="Students sections"
+        value={tab}
+        onChange={(next) => setParams(next === 'applications' ? { tab: 'applications' } : {}, { replace: true })}
+        tabs={[
+          { value: 'students', label: 'Students' },
+          { value: 'applications', label: 'Online Applications', count: pending || undefined },
+        ]}
+      />
+      {tab === 'applications' ? (
+        <ApplicationsTab onChange={counts.reload} />
+      ) : (
+        <StudentList creating={creating} setCreating={setCreating} />
+      )}
+    </>
+  );
+}
+
+function StudentList({ creating, setCreating }) {
   const navigate = useNavigate();
   const { query, apiQuery, update, setPage, setSort } = useListQuery({ sort: 'created_at' });
   const state = useFetch('/admin/students', apiQuery);
   const courses = useFetch('/admin/lookups/courses');
   const agents = useFetch('/admin/lookups/agents');
   const batches = useFetch('/admin/lookups/batches');
-  const [creating, setCreating] = useCreateDialog();
+  const [editingId, setEditingId] = useState(null);
+  const { remove, deleting } = useDeleteAction();
+
+  const confirmDelete = (s) =>
+    remove({
+      path: `/admin/students/${s.id}`,
+      title: `Delete ${s.fullName}?`,
+      message: `${s.fullName} (${s.studentCode}) and their account are deleted permanently, with any enrolments that have no payments. Students with payments, submissions or completed courses cannot be deleted — deactivate them instead.`,
+      success: 'Student deleted',
+      onDone: state.reload,
+    });
 
   return (
     <>
-      <PageHeader
-        title="Students"
-        subtitle="Manage students, their batches, enrolments, progress and referral source."
-        actions={
-          <Button icon={Plus} onClick={() => setCreating(true)}>
-            Add Student
-          </Button>
-        }
-      />
       <Card flush>
         <div className="toolbar">
           <SearchInput
@@ -132,6 +186,15 @@ export default function StudentsPage() {
                 render: (s) => <span className="nowrap">{formatDate(s.createdAt)}</span>,
               },
               { key: 'status', header: 'Status', sortKey: 'status', render: (s) => <StatusBadge status={s.status} /> },
+              actionsColumn((s) => (
+                <RowActionsMenu
+                  label={s.fullName}
+                  onView={() => navigate(`/admin/students/${s.id}`)}
+                  onEdit={() => setEditingId(s.id)}
+                  onDelete={() => confirmDelete(s)}
+                  deleting={deleting(`/admin/students/${s.id}`)}
+                />
+              )),
             ]}
             empty={<EmptyState icon={Users} title="No students found" message="Adjust the filters, or add a student." />}
           />
@@ -144,6 +207,9 @@ export default function StudentsPage() {
         onClose={() => setCreating(false)}
         onSaved={(s) => navigate(`/admin/students/${s.id}`)}
       />
+      {editingId && (
+        <EditPersonModal role="student" personId={editingId} onClose={() => setEditingId(null)} onSaved={() => state.reload()} />
+      )}
     </>
   );
 }

@@ -1,17 +1,33 @@
 import { useState } from 'react';
-import { KeyRound, MailCheck, Pencil, Power } from 'lucide-react';
+import { KeyRound, MailCheck, Pencil, Power, Trash2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button, FormModal, useConfirm, useToast } from '@/components';
 import { useApiAction } from '@/hooks/useApiAction';
 import { api } from '@/services/api';
 import { PersonFormModal } from './PersonFormModal';
+import { useDeleteAction } from './useDeleteAction';
 
-/** Header actions on a person's page: edit, e-mail a set-password link, set temporary password, activate / deactivate. */
+/**
+ * Header actions on a person's page: edit, e-mail a set-password link, set temporary password, activate / deactivate,
+ * delete (refused by the API, with the reason, while records others rely on exist — then deactivate instead).
+ */
 export function AccountActions({ role, person, onChange, extra }) {
   const confirm = useConfirm();
   const toast = useToast();
   const { run, busy } = useApiAction();
   const [editing, setEditing] = useState(false);
   const [resetting, setResetting] = useState(false);
+  const navigate = useNavigate();
+  const { remove, deleting } = useDeleteAction();
+  const path = `/admin/${role}s/${person.id}`;
+  const deletePerson = () =>
+    remove({
+      path,
+      title: `Delete ${person.fullName}?`,
+      message: `${person.fullName}'s account is deleted permanently. If they have records others rely on (payments, submissions, classes or referrals), it cannot be deleted — deactivate it instead.`,
+      success: `${person.fullName} deleted`,
+      onDone: () => navigate(`/admin/${role}s`),
+    });
 
   const toggle = async () => {
     const activating = !person.isActive;
@@ -62,6 +78,9 @@ export function AccountActions({ role, person, onChange, extra }) {
       </Button>
       <Button variant={person.isActive ? 'danger' : 'primary'} icon={Power} loading={busy === 'status'} onClick={toggle}>
         {person.isActive ? 'Deactivate' : 'Activate'}
+      </Button>
+      <Button variant="ghost-danger" icon={Trash2} loading={deleting(path)} onClick={deletePerson}>
+        Delete
       </Button>
 
       <PersonFormModal open={editing} role={role} person={person} onClose={() => setEditing(false)} onSaved={onChange} />

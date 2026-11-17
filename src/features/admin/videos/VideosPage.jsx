@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { CirclePlay, Eye, EyeOff, Pencil, Play, Trash2, Upload } from 'lucide-react';
+import { CirclePlay, Eye, EyeOff, Play, Upload } from 'lucide-react';
 import {
   Button,
   Card,
@@ -21,6 +21,8 @@ import { useCreateDialog, useListQuery } from '@/hooks/useListQuery';
 import { api } from '@/services/api';
 import { formatBytes, formatDate, formatDuration } from '@/utils/format';
 import { AvailabilityChips } from '../shared/BatchAvailability';
+import { actionsColumn } from '../shared/columns';
+import { RowActions } from '../shared/RowActions';
 import { VideoFormModal } from './VideoFormModal';
 
 function PreviewModal({ video, onClose }) {
@@ -173,24 +175,24 @@ export default function VideosPage() {
                   </span>
                 ),
               },
-              {
-                key: 'actions',
-                header: <span className="sr-only">Actions</span>,
-                align: 'right',
-                render: (v) => (
-                  <span className="row" style={{ gap: 4, justifyContent: 'flex-end' }}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      icon={v.isPublished ? EyeOff : Eye}
-                      onClick={() => togglePublish(v)}
-                      aria-label={v.isPublished ? 'Unpublish' : 'Publish'}
-                    />
-                    <Button variant="ghost" size="sm" icon={Pencil} onClick={() => setEditing(v)} aria-label="Edit video" />
-                    <Button variant="ghost" size="sm" icon={Trash2} onClick={() => remove(v)} aria-label="Delete video" />
-                  </span>
-                ),
-              },
+              actionsColumn((v) => (
+                <RowActions
+                  label={v.title}
+                  viewIcon={CirclePlay}
+                  onView={() => setPreviewing(v)}
+                  onEdit={() => setEditing(v)}
+                  onDelete={() => remove(v)}
+                >
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    icon={v.isPublished ? EyeOff : Eye}
+                    tooltip={v.isPublished ? 'Unpublish' : 'Publish'}
+                    onClick={() => togglePublish(v)}
+                    aria-label={v.isPublished ? `Unpublish ${v.title}` : `Publish ${v.title}`}
+                  />
+                </RowActions>
+              )),
             ]}
             empty={<EmptyState icon={CirclePlay} title="No videos yet" message="Upload the first lecture video." />}
           />

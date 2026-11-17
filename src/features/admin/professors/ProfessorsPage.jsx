@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Plus, Stethoscope } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,6 +16,10 @@ import {
 } from '@/components';
 import { useFetch } from '@/hooks/useFetch';
 import { useCreateDialog, useListQuery } from '@/hooks/useListQuery';
+import { actionsColumn } from '../shared/columns';
+import { RowActionsMenu } from '../shared/RowActionsMenu';
+import { useDeleteAction } from '../shared/useDeleteAction';
+import { EditPersonModal } from '../shared/EditPersonModal';
 import { PersonFormModal } from '../shared/PersonFormModal';
 
 export default function ProfessorsPage() {
@@ -23,6 +28,16 @@ export default function ProfessorsPage() {
   const state = useFetch('/admin/professors', apiQuery);
   const courses = useFetch('/admin/lookups/courses');
   const [creating, setCreating] = useCreateDialog();
+  const [editingId, setEditingId] = useState(null);
+  const { remove, deleting } = useDeleteAction();
+  const confirmDelete = (p) =>
+    remove({
+      path: `/admin/professors/${p.id}`,
+      title: `Delete ${p.fullName}?`,
+      message: `${p.fullName} and their account are deleted permanently, with their course and module assignments. Professors who have held online classes, reviewed work or commented cannot be deleted — deactivate them instead.`,
+      success: 'Professor deleted',
+      onDone: state.reload,
+    });
 
   return (
     <>
@@ -92,6 +107,15 @@ export default function ProfessorsPage() {
                 render: (p) => <span className="num">{p.pendingReviews}</span>,
               },
               { key: 'status', header: 'Status', render: (p) => <StatusBadge status={p.isActive ? 'active' : 'inactive'} /> },
+              actionsColumn((p) => (
+                <RowActionsMenu
+                  label={p.fullName}
+                  onView={() => navigate(`/admin/professors/${p.id}`)}
+                  onEdit={() => setEditingId(p.id)}
+                  onDelete={() => confirmDelete(p)}
+                  deleting={deleting(`/admin/professors/${p.id}`)}
+                />
+              )),
             ]}
             empty={<EmptyState icon={Stethoscope} title="No professors found" />}
           />
@@ -104,6 +128,9 @@ export default function ProfessorsPage() {
         onClose={() => setCreating(false)}
         onSaved={(p) => navigate(`/admin/professors/${p.id}`)}
       />
+      {editingId && (
+        <EditPersonModal role="professor" personId={editingId} onClose={() => setEditingId(null)} onSaved={() => state.reload()} />
+      )}
     </>
   );
 }

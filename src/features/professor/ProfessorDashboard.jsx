@@ -261,7 +261,7 @@ export default function ProfessorDashboard() {
                   meetings={upcomingMeetings}
                   to="/professor/meetings"
                   sub={(m) => `${m.batchName} · ${m.recipientCount} invited`}
-                  emptyMessage="Schedule a Google Meet or Zoom class for one of your batches."
+                  emptyMessage="Schedule a Google Meet, Zoom or Teams class for one of your batches."
                 />
                 <Card title="Upcoming Deadlines" icon={Calendar} flush>
                   {upcomingDeadlines.length ? (

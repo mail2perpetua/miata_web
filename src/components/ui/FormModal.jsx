@@ -10,7 +10,8 @@ import { Modal } from './Modal';
  * Create/edit dialog driven by a field list:
  *   { name, label, type: text|email|tel|password|number|date|datetime-local|textarea|select|checkbox,
  *     required?, options?, placeholder?, hint?, span?: true (full width), disabled?,
- *     resets?: ['otherField'] (cleared when this field changes, e.g. course → module) }
+ *     resets?: ['otherField'] (cleared when this field changes, e.g. course → module),
+ *     compute?: (values) => text (a read-only field showing a value calculated from the others; not validated or submitted) }
  * `onValuesChange(values)` lets the parent load dependent options (e.g. modules of the chosen course).
  * `onSubmit(values)` performs the save and may return the saved record; the dialog then closes and
  * `onSuccess(result)` runs (navigate there, not in onSubmit, so closing cannot undo the navigation).
@@ -24,6 +25,7 @@ export function FormModal({ open, ...props }) {
 function clientErrors(fields, values, validate) {
   const errors = {};
   for (const f of fields) {
+    if (f.compute) continue;
     const value = values[f.name];
     if (f.required && f.type !== 'checkbox') errors[f.name] = v.required(value, f.label);
     if (!errors[f.name] && value) {
@@ -33,7 +35,11 @@ function clientErrors(fields, values, validate) {
       if (f.type === 'number') errors[f.name] = v.positiveInt(value, f.label);
     }
   }
-  return { ...errors, ...(validate ? validate(values) : {}) };
+  // validate() adds errors; a field it has nothing to say about ('', null, undefined) keeps the checks above (e.g. required).
+  for (const [name, message] of Object.entries(validate ? validate(values) : {})) {
+    if (message) errors[name] = message;
+  }
+  return errors;
 }
 
 function FormModalInner({
@@ -82,6 +88,7 @@ function FormModalInner({
       placeholder: f.placeholder,
       className: f.span ? 'span-2' : undefined,
     };
+    if (f.compute) return <TextField key={f.name} {...common} value={f.compute(form.values)} readOnly />;
     if (f.type === 'textarea') return <TextArea key={f.name} {...common} rows={f.rows ?? 4} />;
     if (f.type === 'select')
       return <SelectField key={f.name} {...common} options={f.options} placeholder={f.placeholder ?? (f.required ? 'Select…' : 'None')} />;

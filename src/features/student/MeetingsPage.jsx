@@ -17,7 +17,7 @@ export default function MeetingsPage() {
     <>
       <PageHeader
         title="Online Classes"
-        subtitle="Live Google Meet and Zoom classes scheduled by your professors. Join from here, or from the link in your e-mail."
+        subtitle="Live Google Meet, Zoom and Microsoft Teams classes scheduled by your professors. Join from here, or from the link in your e-mail."
       />
       <Tabs
         label="Online classes"

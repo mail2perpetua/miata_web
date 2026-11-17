@@ -3,10 +3,27 @@ import { Checkbox, FormModal, Spinner, useToast } from '@/components';
 import { useFetch } from '@/hooks/useFetch';
 import { api } from '@/services/api';
 import { fromLocalInput, toLocalInput } from '@/utils/format';
-import { linkPlatform } from '@/features/shared/meetings';
+import { classLength, durationLabel, linkPlatform, meetingLink } from '@/features/shared/meetings';
 
-const DURATIONS = [30, 45, 60, 90, 120, 150, 180, 240];
+// The API's limits on a class's length.
+const MIN_MINUTES = 15;
+const MAX_MINUTES = 480;
 const plural = (n, word) => `${n} ${word}${n === 1 ? '' : 's'}`;
+
+/** Why the end time cannot be used (undefined when it can). An end "before" the start that is too long is a mistake. */
+function endTimeError(length) {
+  if (!length) return undefined;
+  if (length.minutes > MAX_MINUTES) return length.nextDay ? 'Choose an end time after the start time' : 'A class can last at most 8 hours';
+  if (length.minutes < MIN_MINUTES) return 'A class must last at least 15 minutes';
+  return undefined;
+}
+
+/** The Duration field: calculated from the start and end times. */
+function durationText({ time, endTime }) {
+  const length = classLength(time, endTime);
+  if (!length || (length.nextDay && length.minutes > MAX_MINUTES)) return '';
+  return `${durationLabel(length.minutes)}${length.nextDay ? ' (ends the next day)' : ''}`;
+}
 
 /** What the save told students, for the confirmation toast. */
 function savedMessage(meeting, creating) {
@@ -82,7 +99,7 @@ export function MeetingFormModal({ open, meeting, onClose, onSaved }) {
   const batches = useFetch(open ? '/professor/batches' : null);
   const [current, setCurrent] = useState({});
   const [date, time] = toLocalInput(meeting?.startsAt).split('T');
-  const durations = meeting && !DURATIONS.includes(meeting.durationMinutes) ? [...DURATIONS, meeting.durationMinutes] : DURATIONS;
+  const endTime = toLocalInput(meeting?.endsAt).split('T')[1];
 
   const fields = [
     { name: 'title', label: 'Meeting title', required: true, span: true, placeholder: 'e.g. Abdominal scanning — live Q&A' },
@@ -110,20 +127,15 @@ export function MeetingFormModal({ open, meeting, onClose, onSaved }) {
     },
     { name: 'date', label: 'Date', type: 'date', required: true },
     { name: 'time', label: 'Start time', type: 'time', required: true },
-    {
-      name: 'durationMinutes',
-      label: 'Duration',
-      type: 'select',
-      required: true,
-      options: durations.map((d) => ({ value: d, label: d < 60 || d % 60 ? `${d} minutes` : plural(d / 60, 'hour') })),
-    },
+    { name: 'endTime', label: 'End time', type: 'time', required: true },
+    { name: 'duration', label: 'Duration', required: true, compute: durationText, placeholder: 'Calculated from the start and end times' },
     {
       name: 'meetingUrl',
-      label: 'Google Meet or Zoom link',
+      label: 'Google Meet, Zoom or Teams link',
       required: true,
       span: true,
       placeholder: 'https://meet.google.com/abc-defg-hij',
-      hint: 'Paste the meeting link from Google Meet (meet.google.com/…) or Zoom (zoom.us/j/…).',
+      hint: 'Paste the meeting link from Google Meet (meet.google.com/…), Zoom (zoom.us/j/…) or Microsoft Teams (teams.microsoft.com/… or teams.live.com/…).',
     },
     { name: 'description', label: 'Description (optional)', type: 'textarea', span: true, rows: 3 },
   ];
@@ -145,7 +157,7 @@ export function MeetingFormModal({ open, meeting, onClose, onSaved }) {
         audience: meeting?.audience ?? 'batch',
         date: date ?? '',
         time: time ?? '',
-        durationMinutes: String(meeting?.durationMinutes ?? 60),
+        endTime: endTime ?? '',
         meetingUrl: meeting?.meetingUrl ?? '',
         description: meeting?.description ?? '',
         studentIds: meeting?.participantIds ?? [],
@@ -155,8 +167,9 @@ export function MeetingFormModal({ open, meeting, onClose, onSaved }) {
         const timeChanged = !meeting || startsAt?.getTime() !== new Date(meeting.startsAt).getTime();
         return {
           meetingUrl:
-            values.meetingUrl && !linkPlatform(values.meetingUrl) ? 'Use a Google Meet or Zoom link starting with https://' : undefined,
+            values.meetingUrl && !linkPlatform(values.meetingUrl) ? 'Use a Google Meet, Zoom or Microsoft Teams meeting link' : undefined,
           time: startsAt && timeChanged && startsAt <= new Date() ? 'Choose a time in the future' : undefined,
+          endTime: endTimeError(classLength(values.time, values.endTime)),
           studentIds:
             values.audience === 'selected' && !(Array.isArray(values.studentIds) && values.studentIds.length)
               ? 'Select at least one student'
@@ -170,8 +183,8 @@ export function MeetingFormModal({ open, meeting, onClose, onSaved }) {
           audience: values.audience,
           studentIds: values.audience === 'selected' ? values.studentIds : [],
           startsAt: fromLocalInput(`${values.date}T${values.time}`),
-          durationMinutes: Number(values.durationMinutes),
-          meetingUrl: values.meetingUrl.trim(),
+          durationMinutes: classLength(values.time, values.endTime).minutes,
+          meetingUrl: meetingLink(values.meetingUrl),
           description: values.description || null,
         };
         try {
@@ -180,8 +193,9 @@ export function MeetingFormModal({ open, meeting, onClose, onSaved }) {
           else toast.success(savedMessage(res.data, creating));
           return res.data;
         } catch (err) {
-          // The API reports the start as one field; the form shows it under the time.
+          // The API reports the start and the length as fields of their own; the form shows them under the times.
           if (err.details?.startsAt) err.details.time = err.details.startsAt;
+          if (err.details?.durationMinutes) err.details.endTime = err.details.durationMinutes;
           throw err;
         }
       }}

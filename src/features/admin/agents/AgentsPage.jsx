@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Handshake, Plus } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -15,6 +16,10 @@ import {
 } from '@/components';
 import { useFetch } from '@/hooks/useFetch';
 import { useCreateDialog, useListQuery } from '@/hooks/useListQuery';
+import { actionsColumn } from '../shared/columns';
+import { RowActionsMenu } from '../shared/RowActionsMenu';
+import { useDeleteAction } from '../shared/useDeleteAction';
+import { EditPersonModal } from '../shared/EditPersonModal';
 import { PersonFormModal } from '../shared/PersonFormModal';
 
 export default function AgentsPage() {
@@ -22,6 +27,16 @@ export default function AgentsPage() {
   const { query, apiQuery, update, setPage, setSort } = useListQuery({ sort: 'created_at' });
   const state = useFetch('/admin/agents', apiQuery);
   const [creating, setCreating] = useCreateDialog();
+  const [editingId, setEditingId] = useState(null);
+  const { remove, deleting } = useDeleteAction();
+  const confirmDelete = (a) =>
+    remove({
+      path: `/admin/agents/${a.id}`,
+      title: `Delete ${a.fullName}?`,
+      message: `${a.fullName} and their account and referral code are deleted permanently.`,
+      success: 'Agent deleted',
+      onDone: state.reload,
+    });
 
   return (
     <>
@@ -82,6 +97,16 @@ export default function AgentsPage() {
               { key: 'pending', header: 'Pending', align: 'right', render: (a) => <span className="num">{a.pendingReferrals}</span> },
               { key: 'completed', header: 'Completed', align: 'right', render: (a) => <span className="num">{a.completedReferrals}</span> },
               { key: 'status', header: 'Status', render: (a) => <StatusBadge status={a.isActive ? 'active' : 'inactive'} /> },
+              actionsColumn((a) => (
+                <RowActionsMenu
+                  label={a.fullName}
+                  onView={() => navigate(`/admin/agents/${a.id}`)}
+                  onEdit={() => setEditingId(a.id)}
+                  onDelete={() => confirmDelete(a)}
+                  deleteDisabled={a.totalReferrals ? 'Has referred students — reassign them first, or deactivate' : null}
+                  deleting={deleting(`/admin/agents/${a.id}`)}
+                />
+              )),
             ]}
             empty={<EmptyState icon={Handshake} title="No agents yet" message="Add an agent to generate their referral link." />}
           />
@@ -89,6 +114,7 @@ export default function AgentsPage() {
         <Pagination meta={state.meta} onPage={setPage} noun="agents" />
       </Card>
       <PersonFormModal open={creating} role="agent" onClose={() => setCreating(false)} onSaved={(a) => navigate(`/admin/agents/${a.id}`)} />
+      {editingId && <EditPersonModal role="agent" personId={editingId} onClose={() => setEditingId(null)} onSaved={() => state.reload()} />}
     </>
   );
 }

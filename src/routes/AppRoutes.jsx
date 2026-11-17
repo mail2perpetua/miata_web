@@ -9,6 +9,7 @@ import RoleLoginPage from '@/features/auth/RoleLoginPage';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { WebsiteLayout } from '@/website/layout/WebsiteLayout';
 import AboutPage from '@/website/pages/AboutPage';
+import ApplyPage from '@/website/pages/ApplyPage';
 import ContactPage from '@/website/pages/ContactPage';
 import CoursesPage from '@/website/pages/CoursesPage';
 import FeesPage from '@/website/pages/FeesPage';
@@ -110,6 +111,7 @@ export function AppRoutes() {
             <Route path="courses" element={<CoursesPage />} />
             <Route path="fees-and-scholarships" element={<FeesPage />} />
             <Route path="contact" element={<ContactPage />} />
+            <Route path="apply" element={<ApplyPage />} />
             <Route element={<GuestOnly />}>
               <Route path="login" element={<LoginRolesPage />} />
               <Route path="login/:role" element={<RoleLoginPage />} />

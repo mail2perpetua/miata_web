@@ -267,3 +267,62 @@
   background-image: var(--page-header-image);
   background-position: var(--page-header-position, center center);
 }
+
+/* ─── Header "Apply Now" button (replaces the theme's "Call to Questions" phone box) ───
+   Same look as the banner's Apply Now button (the theme shrinks `.main-menu__right .eduact-btn`). Below 1200px, where
+   the menu (☰) button shows, it is hidden and the mobile menu has its own Apply Now button. */
+.main-menu__right .eduact-btn.main-menu__apply {
+  display: inline-flex;
+  align-items: center;
+  height: auto;
+  margin-left: 49px;
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 700;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.main-menu__right .main-menu__apply .eduact-btn__curve {
+  opacity: 0.2;
+}
+
+.main-menu__right .eduact-btn.main-menu__apply:focus-visible {
+  box-shadow: 0 0 0 3px rgba(var(--eduact-secondary-rgb), 0.35);
+}
+
+@media (max-width: 1399px) {
+  .main-menu__right .eduact-btn.main-menu__apply {
+    margin-left: 15px;
+  }
+}
+
+@media (max-width: 1199px) {
+  .main-menu__right .eduact-btn.main-menu__apply {
+    display: none;
+  }
+}
+
+/* Small screens: login icon first, then the menu (☰) button at the right edge. */
+.main-menu__right .main-menu__toggler.mobile-nav__toggler {
+  margin-right: 0;
+  margin-left: 20px;
+}
+
+/* Apply Now in the mobile menu, between the page links and the contact details. */
+.mobile-nav__apply {
+  margin-top: 24px;
+}
+
+.mobile-nav__apply .eduact-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 12px 20px;
+  font-size: 16px;
+}
+
+.mobile-nav__apply .eduact-btn:focus-visible {
+  box-shadow: 0 0 0 3px rgba(var(--eduact-white-rgb), 0.6);
+}

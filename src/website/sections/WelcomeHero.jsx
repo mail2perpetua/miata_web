@@ -81,7 +81,7 @@ export function WelcomeHero() {
                 data-wow-delay="600ms"
                 style={{ display: 'flex', flexWrap: 'wrap', gap: '15px' }}
               >
-                <ThemeButton as={Link} to="/contact" secondary style={BUTTON_STYLE}>
+                <ThemeButton as={Link} to="/apply" secondary style={BUTTON_STYLE}>
                   Apply Now
                 </ThemeButton>{' '}
                 <ThemeButton href={BROCHURE_URL} style={BUTTON_STYLE}>

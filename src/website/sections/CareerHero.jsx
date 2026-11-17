@@ -48,7 +48,7 @@ export function CareerHero() {
                 program. <img src="/assets/images/shapes/banner-1-shape-1.png" alt="" />
               </p>
               <div className="hero-banner__btn wow fadeInUp animated" data-wow-delay="600ms" style={shown('600ms', 'fadeInUp')}>
-                <ThemeButton as={Link} to="/contact" secondary>
+                <ThemeButton as={Link} to="/apply" secondary>
                   Apply Now
                 </ThemeButton>{' '}
                 <ThemeButton href={`tel:${CONTACT.phone}`}>Call Now</ThemeButton>

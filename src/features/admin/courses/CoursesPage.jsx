@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Download, GraduationCap, Pencil, Plus } from 'lucide-react';
+import { Download, GraduationCap, Plus } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import {
   Button,
@@ -16,6 +16,9 @@ import {
 import { useFetch } from '@/hooks/useFetch';
 import { useCreateDialog, useListQuery } from '@/hooks/useListQuery';
 import { durationLabel } from '@/utils/format';
+import { actionsColumn } from '../shared/columns';
+import { RowActions } from '../shared/RowActions';
+import { useDeleteAction } from '../shared/useDeleteAction';
 import { CourseFormModal } from './CourseFormModal';
 import { ImportTimetableModal } from './ImportTimetableModal';
 
@@ -25,6 +28,15 @@ export default function CoursesPage() {
   const state = useFetch('/admin/courses', apiQuery);
   const [creating, setCreating] = useCreateDialog();
   const [editing, setEditing] = useState(null);
+  const { remove, deleting } = useDeleteAction();
+  const confirmDelete = (c) =>
+    remove({
+      path: `/admin/courses/${c.id}`,
+      title: `Delete “${c.title}”?`,
+      message: 'The course, its curriculum (modules and lessons), timetable and teaching assignments are deleted permanently.',
+      success: 'Course deleted',
+      onDone: state.reload,
+    });
   const [importing, setImporting] = useState(false);
 
   return (
@@ -114,23 +126,20 @@ export default function CoursesPage() {
               },
               { key: 'videoCount', header: 'Videos', align: 'right', render: (c) => <span className="num">{c.videoCount}</span> },
               { key: 'status', header: 'Status', render: (c) => <StatusBadge status={c.isActive ? 'active' : 'inactive'} /> },
-              {
-                key: 'actions',
-                header: <span className="sr-only">Actions</span>,
-                align: 'right',
-                render: (c) => (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    icon={Pencil}
-                    aria-label={`Edit ${c.title}`}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setEditing(c);
-                    }}
-                  />
-                ),
-              },
+              actionsColumn((c) => (
+                <RowActions
+                  label={c.title}
+                  onView={() => navigate(`/admin/courses/${c.id}`)}
+                  onEdit={() => setEditing(c)}
+                  onDelete={() => confirmDelete(c)}
+                  deleteDisabled={
+                    c.studentCount || c.videoCount || c.assignmentCount
+                      ? 'Has enrolments, videos or assignments — deactivate it instead'
+                      : null
+                  }
+                  deleting={deleting(`/admin/courses/${c.id}`)}
+                />
+              )),
             ]}
             empty={
               <EmptyState

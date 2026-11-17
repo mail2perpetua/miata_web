@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { CONTACT, MAIN_MENU } from '../content/site';
+import { MAIN_MENU } from '../content/site';
+import { ThemeButton } from '../sections/SectionTitle';
 
 /** The main navigation list; reused by the header, the sticky header and the mobile menu. */
 export function MenuList() {
@@ -27,7 +28,11 @@ function MenuBar({ onOpenMobileNav }) {
       <div className="main-menu__nav">
         <MenuList />
       </div>
+      {/* Desktop: login, Apply Now. Below 1200px: login, menu (☰); Apply Now moves into the mobile menu. */}
       <div className="main-menu__right">
+        <Link to="/login" className="main-menu__login" aria-label="Login">
+          <i className="icon-account-1"></i>
+        </Link>
         <a
           href="#"
           className="main-menu__toggler mobile-nav__toggler"
@@ -39,12 +44,9 @@ function MenuBar({ onOpenMobileNav }) {
         >
           <i className="fa fa-bars"></i>
         </a>
-        <Link to="/login" className="main-menu__login" aria-label="Login">
-          <i className="icon-account-1"></i>
-        </Link>
-        <div className="main-menu__info">
-          <span className="icon-Call"></span> <a href={`tel:${CONTACT.phone}`}>{CONTACT.phone}</a> Call to Questions
-        </div>
+        <ThemeButton as={Link} to="/apply" secondary className="main-menu__apply">
+          Apply Now
+        </ThemeButton>
       </div>
     </div>
   );

@@ -1,6 +1,7 @@
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
 import { CONTACT } from '../content/site';
+import { ThemeButton } from '../sections/SectionTitle';
 import { MenuList } from './SiteHeader';
 
 const SOCIAL = [
@@ -25,6 +26,12 @@ export function MobileNav({ open, onClose }) {
         </div>
         <div className="mobile-nav__container">
           <MenuList />
+        </div>
+        <div className="mobile-nav__apply">
+          {/* onClick: the menu otherwise stays open when this is clicked on /apply itself (no route change). */}
+          <ThemeButton as={Link} to="/apply" secondary onClick={onClose}>
+            Apply Now
+          </ThemeButton>
         </div>
         <ul className="mobile-nav__contact list-unstyled">
           <li>
