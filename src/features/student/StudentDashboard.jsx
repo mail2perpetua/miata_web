@@ -35,6 +35,7 @@ import { dateRange, daysUntil, formatDate, formatMoney } from '@/utils/format';
 import { UpcomingMeetingsCard } from '@/features/shared/MeetingWidgets';
 import { TimetableThisWeekCard } from '@/features/shared/TimetableViews';
 import { AssignmentRow, ModuleRow, StudentActivity, VideoCard } from './StudentWidgets';
+import { WorksheetsCard } from './WorksheetsCard';
 
 // The MIATA crest from the website's assets (public/assets).
 const logo = '/assets/images/loader.png';
@@ -168,6 +169,7 @@ export default function StudentDashboard() {
                   )}
                 </Card>
               </div>
+              <WorksheetsCard />
               <Card title="Recent Activity" icon={Zap} flush>
                 <StudentActivity items={recentActivity} />
               </Card>

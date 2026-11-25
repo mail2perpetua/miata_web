@@ -3,6 +3,7 @@ import {
   BookOpen,
   Calendar,
   CircleCheck,
+  ClipboardPen,
   Clock,
   FilePlus2,
   FileText,
@@ -31,6 +32,7 @@ import { TimetableThisWeekCard } from '@/features/shared/TimetableViews';
 import { useFetch } from '@/hooks/useFetch';
 import { dateRange, formatDate, formatDateTime, timeAgo } from '@/utils/format';
 import { ModuleStatusCard } from './ModuleStatusCard';
+import { WorksheetReviewsCard } from './WorksheetReviewsCard';
 
 /** The batches the professor teaches: their courses, size, progress and what awaits review, with batch-wise shortcuts. */
 function MyBatches({ batches }) {
@@ -112,6 +114,7 @@ const ACTIVITY = {
 
 const QUICK = [
   ['Create Assignment', '/professor/assignments?new=1', FilePlus2, 'purple'],
+  ['Create Practical Worksheet', '/professor/worksheets?new=1', ClipboardPen, 'blue'],
   ['Schedule Online Class', '/professor/meetings?new=1', MonitorPlay, 'green'],
   ['View Students List', '/professor/students', Users, 'blue'],
   ['Review / Comment', '/professor/reviews', MessageSquare, 'green'],
@@ -201,6 +204,7 @@ export default function ProfessorDashboard() {
                     />
                   )
                 )}
+                <WorksheetReviewsCard />
                 <Card title="Recent Activity" icon={Clock} flush>
                   <DataTable
                     compact

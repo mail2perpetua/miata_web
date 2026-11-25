@@ -1,11 +1,22 @@
 import { useState } from 'react';
-import { CalendarClock, CalendarDays, ChevronDown, ChevronRight, CircleCheck, CirclePlay, ClipboardList, FileText } from 'lucide-react';
+import {
+  CalendarClock,
+  CalendarDays,
+  ChevronDown,
+  ChevronRight,
+  CircleCheck,
+  CirclePlay,
+  ClipboardList,
+  ClipboardPen,
+  FileText,
+} from 'lucide-react';
 import { Link, useLocation, useParams } from 'react-router-dom';
 import { AsyncContent, Avatar, Button, Card, EmptyState, PageHeader, ProgressRing, StatusBadge } from '@/components';
 import { useFetch } from '@/hooks/useFetch';
 import { durationLabel, formatDate, formatDuration } from '@/utils/format';
 import { ClassDetailsModal, SessionSchedule, UpcomingClassesCard } from './ClassWidgets';
 import { classWhenShort, sessionWindow } from '@/features/shared/classes';
+import { LogbookStatus } from '@/features/shared/worksheets/LogbookViews';
 
 // Sessions shown in a module's schedule before "Show all".
 const SCHEDULE_ROWS = 6;
@@ -16,6 +27,18 @@ function VideoRow({ video }) {
       {video.completedAt ? <CircleCheck aria-hidden="true" style={{ color: 'var(--green-600)' }} /> : <CirclePlay aria-hidden="true" />}
       <span className="content-row__title">{video.title}</span>
       <span className="muted num">{formatDuration(video.durationSeconds)}</span>
+    </Link>
+  );
+}
+
+/** A practical worksheet (clinical logbook) of the module or course, with the student's logbook status. */
+function WorksheetRow({ worksheet }) {
+  return (
+    <Link to={`/student/worksheets/${worksheet.id}`} className="content-row">
+      <ClipboardPen aria-hidden="true" />
+      <span className="content-row__title">{worksheet.title}</span>
+      {worksheet.dueAt && <span className="muted nowrap">Due {formatDate(worksheet.dueAt)}</span>}
+      <LogbookStatus status={worksheet.status} />
     </Link>
   );
 }
@@ -108,6 +131,8 @@ export default function CoursePage() {
   const { courseId } = useParams();
   const { hash } = useLocation();
   const state = useFetch(`/student/courses/${courseId}`);
+  // Practical worksheets come from their own endpoint; the course loads without them.
+  const worksheets = useFetch('/student/worksheets', { courseId }).data ?? [];
   const [open, setOpen] = useState(() => new Set(hash.startsWith('#module-') ? [Number(hash.slice(8))] : []));
   const [selectedClass, setSelectedClass] = useState(null);
 
@@ -198,12 +223,17 @@ export default function CoursePage() {
                           {m.assignments.map((a) => (
                             <AssignmentRow key={a.id} assignment={a} />
                           ))}
+                          {worksheets
+                            .filter((w) => w.moduleId === m.id)
+                            .map((w) => (
+                              <WorksheetRow key={`w${w.id}`} worksheet={w} />
+                            ))}
                         </div>
                       )}
                     </div>
                   );
                 })}
-                {(c.generalVideos.length > 0 || c.generalAssignments.length > 0) && (
+                {(c.generalVideos.length > 0 || c.generalAssignments.length > 0 || worksheets.some((w) => !w.moduleId)) && (
                   <Card title="Course resources">
                     {c.generalVideos.map((v) => (
                       <VideoRow key={v.id} video={v} />
@@ -211,6 +241,11 @@ export default function CoursePage() {
                     {c.generalAssignments.map((a) => (
                       <AssignmentRow key={a.id} assignment={a} />
                     ))}
+                    {worksheets
+                      .filter((w) => !w.moduleId)
+                      .map((w) => (
+                        <WorksheetRow key={`w${w.id}`} worksheet={w} />
+                      ))}
                   </Card>
                 )}
               </div>

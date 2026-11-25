@@ -2244,4 +2244,27 @@
   .action-menu .dropdown__item--danger:not(:disabled):hover {
     background: var(--red-100);
   }
+
+  /* ─── Practical worksheets (clinical training logbook) ─── */
+  .logbook-text {
+    display: block;
+    min-width: 160px;
+    max-width: 320px;
+    white-space: pre-line;
+    line-height: 1.5;
+  }
+
+  .logbook-verified {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    color: var(--green-600);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  .logbook-verified svg {
+    width: 16px;
+    height: 16px;
+  }
 }

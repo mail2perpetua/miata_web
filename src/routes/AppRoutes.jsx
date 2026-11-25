@@ -61,6 +61,11 @@ const EnquiriesPage = page(() => import('@/features/admin/enquiries/EnquiriesPag
 const AdminVideosPage = page(() => import('@/features/admin/videos/VideosPage'));
 const SettingsPage = page(() => import('@/features/admin/settings/SettingsPage'));
 
+// Practical worksheets (admins and professors share these pages; `base` is the portal)
+const WorksheetsManagerPage = page(() => import('@/features/shared/worksheets/WorksheetsManagerPage'));
+const WorksheetDetailPage = page(() => import('@/features/shared/worksheets/WorksheetDetailPage'));
+const WorksheetReviewPage = page(() => import('@/features/shared/worksheets/WorksheetReviewPage'));
+
 // Agent
 const AgentDashboard = page(() => import('@/features/agent/AgentDashboard'));
 const ReferredStudentsPage = page(() => import('@/features/agent/ReferredStudentsPage'));
@@ -95,6 +100,8 @@ const CompletionPage = page(() => import('@/features/student/CompletionPage'));
 const StudentMeetingsPage = page(() => import('@/features/student/MeetingsPage'));
 const StudentTimetablePage = page(() => import('@/features/student/TimetablePage'));
 const StudentFeesPage = page(() => import('@/features/student/FeesPage'));
+const StudentWorksheetsPage = page(() => import('@/features/student/WorksheetsPage'));
+const StudentWorksheetPage = page(() => import('@/features/student/WorksheetPage'));
 
 export function AppRoutes() {
   const { pathname } = useLocation();
@@ -144,6 +151,9 @@ export function AppRoutes() {
                 <Route path="referrals" element={<ReferralsPage />} />
                 <Route path="assignments" element={<AdminAssignmentsPage />} />
                 <Route path="submissions/:submissionId" element={<AdminSubmissionPage />} />
+                <Route path="worksheets" element={<WorksheetsManagerPage base="/admin" />} />
+                <Route path="worksheets/:worksheetId" element={<WorksheetDetailPage base="/admin" />} />
+                <Route path="worksheets/submissions/:submissionId" element={<WorksheetReviewPage base="/admin" />} />
                 <Route path="meetings" element={<AdminMeetingsPage />} />
                 <Route path="payments" element={<PaymentsPage />} />
                 <Route path="payments/:paymentId" element={<PaymentsPage />} />
@@ -177,6 +187,9 @@ export function AppRoutes() {
                 <Route path="reviews" element={<ReviewQueuePage />} />
                 <Route path="reviews/:submissionId" element={<ReviewPage />} />
                 <Route path="completed" element={<CompletedReworkPage />} />
+                <Route path="worksheets" element={<WorksheetsManagerPage base="/professor" />} />
+                <Route path="worksheets/:worksheetId" element={<WorksheetDetailPage base="/professor" />} />
+                <Route path="worksheets/submissions/:submissionId" element={<WorksheetReviewPage base="/professor" />} />
                 <Route path="meetings" element={<ProfessorMeetingsPage />} />
                 <Route path="timetable" element={<ProfessorTimetablePage />} />
                 <Route path="profile" element={<ProfilePage />} />
@@ -195,6 +208,8 @@ export function AppRoutes() {
                 <Route path="assignments" element={<StudentAssignmentsPage />} />
                 <Route path="assignments/:assignmentId" element={<StudentAssignmentPage />} />
                 <Route path="submissions" element={<SubmissionsPage />} />
+                <Route path="worksheets" element={<StudentWorksheetsPage />} />
+                <Route path="worksheets/:worksheetId" element={<StudentWorksheetPage />} />
                 <Route path="progress" element={<ProgressPage />} />
                 <Route path="completion" element={<CompletionPage />} />
                 <Route path="meetings" element={<StudentMeetingsPage />} />
