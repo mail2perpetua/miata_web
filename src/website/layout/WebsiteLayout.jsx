@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useState } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
+import { LoginModal } from '@/features/auth/LoginModal';
 import { loadChatLauncher, setWebsiteStyles } from '../theme/themeAssets';
 import { useThemePlugins } from '../theme/useThemePlugins';
 import { CustomCursor } from './CustomCursor';
@@ -16,8 +17,8 @@ function WebsiteStyles() {
   return null;
 }
 
-// The original login page had no sticky header; the other sign-in pages follow its design.
-const WITHOUT_STICKY_HEADER = /^\/(login|register|forgot-password|reset-password)(\/|$)/;
+// The original login page had no sticky header; the remaining sign-in pages follow its design.
+const WITHOUT_STICKY_HEADER = /^\/(register|forgot-password|reset-password)(\/|$)/;
 
 /** Shell of every public page: the original header, mobile menu, footer and site-wide extras. */
 export function WebsiteLayout() {
@@ -57,6 +58,7 @@ export function WebsiteLayout() {
       </div>
       <MobileNav open={navOpen} onClose={() => setNavOpen(false)} />
       <FloatingContact />
+      <LoginModal />
     </>
   );
 }

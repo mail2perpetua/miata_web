@@ -1,21 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
-import { MAIN_MENU } from '../content/site';
+import { Link } from 'react-router-dom';
+import { LoginLink } from '@/features/auth/LoginModal';
 import { ThemeButton } from '../sections/SectionTitle';
-
-/** The main navigation list; reused by the header, the sticky header and the mobile menu. */
-export function MenuList() {
-  const { pathname } = useLocation();
-  return (
-    <ul className="main-menu__list">
-      {MAIN_MENU.map((item) => (
-        <li key={item.to} className={pathname === item.to ? 'current' : undefined}>
-          <Link to={item.to}>{item.label}</Link>
-        </li>
-      ))}
-    </ul>
-  );
-}
+import { DesktopMenu } from './MainMenu';
 
 function MenuBar({ onOpenMobileNav }) {
   return (
@@ -26,13 +13,13 @@ function MenuBar({ onOpenMobileNav }) {
         </Link>
       </div>
       <div className="main-menu__nav">
-        <MenuList />
+        <DesktopMenu />
       </div>
       {/* Desktop: login, Apply Now. Below 1200px: login, menu (☰); Apply Now moves into the mobile menu. */}
       <div className="main-menu__right">
-        <Link to="/login" className="main-menu__login" aria-label="Login">
+        <LoginLink className="main-menu__login" aria-label="Login" aria-haspopup="dialog">
           <i className="icon-account-1"></i>
-        </Link>
+        </LoginLink>
         <a
           href="#"
           className="main-menu__toggler mobile-nav__toggler"

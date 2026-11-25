@@ -1,4 +1,4 @@
-// Website highlight content: why MIATA, outcomes, training locations, graduates and testimonials.
+// Website highlight content: why MIATA, outcomes, graduates and testimonials. Training locations are in academy.js.
 
 export const SERVICES = [
   {
@@ -10,7 +10,7 @@ export const SERVICES = [
   {
     icon: 'icon-business',
     title: 'International Clinical Exposure',
-    text: 'Train in world-class facilities across UK, Australia, UAE, Malaysia, and more. Experience diverse clinical environments and international standards.',
+    text: 'Practical training at designated institutions, hospitals and clinical facilities across Australia, the United Kingdom, Malaysia and Cambodia.',
     link: '/courses',
   },
   {
@@ -21,8 +21,8 @@ export const SERVICES = [
   },
   {
     icon: 'icon-neural',
-    title: 'ARDMS Eligibility Pathway',
-    text: 'Meet prerequisites for ARDMS certification. Our curriculum aligns with international registry requirements for global career mobility.',
+    title: 'ARDMS Exam Preparation',
+    text: 'Our curriculum incorporates relevant ARDMS examination domains and sonographic principles to help prepare students for professional examinations. Eligibility is determined solely by ARDMS.',
     link: '/about',
   },
 ];
@@ -34,59 +34,19 @@ export const FACTS = [
     title: 'Internship Placement Rate',
   },
   {
-    value: 12,
-    suffix: '+',
-    title: 'International Training Locations',
+    value: 4,
+    suffix: '',
+    title: 'Countries in Our Training Network',
   },
   {
-    value: 500,
-    suffix: '+',
-    title: 'ARDMS Eligible Graduates',
+    value: 8,
+    suffix: '',
+    title: 'International Training Partners',
   },
   {
     value: 100,
     suffix: '%',
     title: 'Career Mobility Support',
-  },
-];
-
-/** International clinical training locations (carousel). */
-export const LOCATIONS = [
-  {
-    code: 'GB',
-    summary: 'NHS and private facilities',
-    country: 'United Kingdom',
-    cities: ['London', 'Manchester', 'Edinburgh'],
-  },
-  {
-    code: 'AU',
-    summary: 'Leading diagnostic centers',
-    country: 'Australia',
-    cities: ['Sydney', 'Melbourne', 'Brisbane'],
-  },
-  {
-    code: 'AE',
-    summary: 'State-of-the-art hospitals',
-    country: 'United Arab Emirates',
-    cities: ['Dubai', 'Abu Dhabi'],
-  },
-  {
-    code: 'MY',
-    summary: 'International medical centers',
-    country: 'Malaysia',
-    cities: ['Kuala Lumpur', 'Penang'],
-  },
-  {
-    code: 'MU',
-    summary: 'Modern healthcare facilities',
-    country: 'Mauritius',
-    cities: ['Port Louis'],
-  },
-  {
-    code: '🌍',
-    summary: 'Premium healthcare systems',
-    country: 'Middle East',
-    cities: ['Qatar', 'Saudi Arabia'],
   },
 ];
 

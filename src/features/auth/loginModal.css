@@ -1,0 +1,749 @@
+/*
+ * Website login dialog (features/auth/LoginModal.jsx). Theme font and colours; every class is prefixed `login-modal`.
+ * Desktop: brand / portal panel beside the form. Tablet: narrower. Phones: one column, as a sheet from the bottom.
+ */
+
+.login-modal-open {
+  overflow: hidden;
+}
+
+/* The third-party chat launcher (themeAssets.js) stacks above everything; hide it while the dialog is open. */
+.login-modal-open [class*='chat-bot-'] {
+  visibility: hidden !important;
+}
+
+.login-modal {
+  --lm-navy: #0e2a54;
+  --lm-blue: var(--eduact-base, #1d519b);
+  --lm-blue-rgb: 29, 81, 155;
+  --lm-orange: var(--eduact-secondary, #f57005);
+  --lm-gold: #ffc27a;
+  --lm-ink: var(--eduact-black, #2a254d);
+  --lm-muted: #64707f;
+  --lm-line: #e2e8f1;
+  --lm-soft: #f3f6fb;
+
+  position: fixed;
+  inset: 0;
+  z-index: 100000; /* above the sticky header and the floating call / WhatsApp buttons */
+  display: flex;
+  padding: 24px;
+  overflow-y: auto; /* very short screens: the dialog scrolls */
+  background-color: rgba(9, 27, 56, 0.62);
+  backdrop-filter: blur(6px);
+  font-family: var(--eduact-font, 'Urbanist', sans-serif);
+  animation: login-modal-fade 0.22s ease both;
+}
+
+.login-modal.is-closing {
+  animation: login-modal-fade-out 0.2s ease both;
+}
+
+.login-modal__dialog {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1fr);
+  width: 100%;
+  max-width: 920px;
+  margin: auto; /* centred, and still scrollable when taller than the screen */
+  overflow: hidden;
+  border-radius: 24px;
+  background-color: #fff;
+  box-shadow: 0 40px 100px -30px rgba(0, 0, 0, 0.55);
+  outline: none;
+  animation: login-modal-in 0.3s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+
+.login-modal.is-closing .login-modal__dialog {
+  animation: login-modal-out 0.2s ease both;
+}
+
+.login-modal button,
+.login-modal input {
+  font: inherit;
+}
+
+.login-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background-color: var(--lm-soft);
+  color: var(--lm-ink);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.login-modal__close:hover {
+  background-color: var(--lm-ink);
+  color: #fff;
+  transform: rotate(90deg);
+}
+
+.login-modal__close:focus-visible,
+.login-modal__link:focus-visible,
+.login-modal__back:focus-visible,
+.login-modal__reveal:focus-visible,
+.login-modal__footnote a:focus-visible {
+  outline: 2px solid var(--lm-blue);
+  outline-offset: 2px;
+}
+
+/* ─── Brand / portal panel ─── */
+
+.login-modal__aside {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 40px 36px;
+  overflow: hidden;
+  color: rgba(255, 255, 255, 0.8);
+  background:
+    radial-gradient(circle at 0% 0%, rgba(245, 112, 5, 0.2), transparent 45%),
+    linear-gradient(160deg, var(--lm-navy) 0%, #133a72 55%, var(--lm-blue) 100%);
+}
+
+/* The site's dotted swirl, recoloured, in the bottom-left corner (as in the footer). */
+.login-modal__aside::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 120%;
+  aspect-ratio: 951 / 509;
+  background-color: #fff;
+  opacity: 0.08;
+  pointer-events: none;
+  -webkit-mask: url('/assets/images/shapes/footer-bg-2.png') left bottom / contain no-repeat;
+  mask: url('/assets/images/shapes/footer-bg-2.png') left bottom / contain no-repeat;
+}
+
+.login-modal__aside > * {
+  position: relative;
+  z-index: 1;
+}
+
+.login-modal__brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.login-modal__brand img {
+  flex: none;
+  object-fit: contain;
+}
+
+.login-modal__brand strong {
+  display: block;
+  font-size: 22px;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #fff;
+}
+
+.login-modal__brand strong + span {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.35;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.login-modal__portal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 56px;
+  height: 56px;
+  margin-bottom: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: var(--lm-gold);
+}
+
+.login-modal__portal-title {
+  margin: 0 0 8px;
+  font-size: 24px;
+  line-height: 1.25;
+  font-weight: 800;
+  color: #fff;
+}
+
+.login-modal__portal-text {
+  margin: 0 0 18px;
+  font-size: 15px;
+  line-height: 1.65;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+.login-modal__features {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.login-modal__features li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14.5px;
+  line-height: 1.45;
+  font-weight: 600;
+  color: #fff;
+}
+
+.login-modal__features svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--lm-gold);
+}
+
+.login-modal__slogan {
+  margin: auto 0 0;
+  padding-left: 12px;
+  border-left: 3px solid var(--lm-orange);
+  font-size: 13.5px;
+  line-height: 1.6;
+  font-weight: 600;
+  font-style: italic;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+/* ─── Form panel ─── */
+
+.login-modal__main {
+  min-width: 0;
+  padding: 44px 44px 36px;
+}
+
+.login-modal__compact-brand {
+  display: none;
+}
+
+.login-modal__title {
+  margin: 0 0 6px;
+  padding-right: 44px; /* clear of the close button */
+  font-size: 28px;
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--lm-ink);
+}
+
+.login-modal__subtitle {
+  margin: 0 0 24px;
+  font-size: 15.5px;
+  line-height: 1.6;
+  font-weight: 500;
+  color: var(--lm-muted);
+}
+
+.login-modal__title-icon {
+  display: flex; /* its own line, below "Back to sign in" */
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 14px;
+  border-radius: 14px;
+  background-color: rgba(245, 112, 5, 0.12);
+  color: var(--lm-orange);
+}
+
+.login-modal__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--lm-blue);
+}
+
+.login-modal__back:hover {
+  color: var(--lm-orange);
+}
+
+/* Portal picker: a segmented control of four radio buttons. */
+.login-modal__roles {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+  margin: 0 0 22px;
+  padding: 5px;
+  border: 0;
+  border-radius: 16px;
+  background-color: var(--lm-soft);
+}
+
+.login-modal__role {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 64px;
+  margin: 0;
+  padding: 8px 4px;
+  border-radius: 12px;
+  font-size: 13.5px;
+  line-height: 1.2;
+  font-weight: 700;
+  text-align: center;
+  color: var(--lm-muted);
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.login-modal__role input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.login-modal__role:hover {
+  color: var(--lm-ink);
+}
+
+.login-modal__role.is-active {
+  background-color: #fff;
+  color: var(--lm-blue);
+  box-shadow: 0 6px 16px -8px rgba(14, 42, 84, 0.4);
+}
+
+.login-modal__role:has(input:focus-visible) {
+  outline: 2px solid var(--lm-blue);
+  outline-offset: 2px;
+}
+
+/* Messages */
+.login-modal__alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 18px;
+  padding: 12px 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  font-weight: 600;
+}
+
+.login-modal__alert svg {
+  flex: none;
+  margin-top: 2px;
+}
+
+/* A confirmation that receives focus (so keyboard users stay in the dialog) needs no focus ring. */
+.login-modal__alert[tabindex='-1']:focus {
+  outline: none;
+}
+
+.login-modal__alert--info {
+  border-color: rgba(var(--lm-blue-rgb), 0.18);
+  background-color: rgba(var(--lm-blue-rgb), 0.07);
+  color: #1d3f73;
+}
+
+.login-modal__alert--error {
+  border-color: #f4c7c7;
+  background-color: #fdeeee;
+  color: #9b1c1c;
+}
+
+.login-modal__alert--error .login-modal__link {
+  color: #9b1c1c;
+  text-decoration-color: currentColor;
+}
+
+.login-modal__alert--success {
+  border-color: #bfe8cf;
+  background-color: #eaf8ef;
+  color: #17643a;
+}
+
+/* Fields */
+.login-modal__field {
+  margin-bottom: 16px;
+}
+
+.login-modal__label {
+  display: block;
+  margin: 0 0 7px;
+  font-size: 14px;
+  line-height: 1.4;
+  font-weight: 700;
+  color: var(--lm-ink);
+}
+
+.login-modal__control {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.login-modal__control-icon {
+  position: absolute;
+  left: 15px;
+  color: #8a94a6;
+  pointer-events: none;
+  transition: color 0.2s ease;
+}
+
+.login-modal__control input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px 0 44px;
+  border: 1.5px solid var(--lm-line);
+  border-radius: 12px;
+  background-color: #f8fafd;
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--lm-ink);
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    background-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.login-modal__control:has(.login-modal__reveal) input {
+  padding-right: 50px;
+}
+
+.login-modal__control input::placeholder {
+  font-weight: 500;
+  color: #a3acbb;
+}
+
+.login-modal__control input:focus {
+  border-color: var(--lm-blue);
+  background-color: #fff;
+  box-shadow: 0 0 0 4px rgba(var(--lm-blue-rgb), 0.12);
+}
+
+.login-modal__control:focus-within .login-modal__control-icon {
+  color: var(--lm-blue);
+}
+
+.login-modal__field.has-error input {
+  border-color: #d64545;
+  background-color: #fff8f8;
+}
+
+.login-modal__field.has-error .login-modal__control-icon {
+  color: #d64545;
+}
+
+.login-modal__reveal {
+  position: absolute;
+  right: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: #8a94a6;
+}
+
+.login-modal__reveal:hover {
+  background-color: var(--lm-soft);
+  color: var(--lm-ink);
+}
+
+.login-modal__error {
+  margin: 6px 0 0;
+  font-size: 13.5px;
+  line-height: 1.4;
+  font-weight: 600;
+  color: #c0392b;
+}
+
+.login-modal__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px 16px;
+  margin: 4px 0 22px;
+}
+
+.login-modal__check {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin: 0;
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--lm-ink);
+  cursor: pointer;
+}
+
+.login-modal__check input {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: var(--lm-blue);
+}
+
+.login-modal__link {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--lm-blue);
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-underline-offset: 3px;
+  transition:
+    color 0.2s ease,
+    text-decoration-color 0.2s ease;
+}
+
+.login-modal__link:hover {
+  color: var(--lm-orange);
+  text-decoration-color: currentColor;
+}
+
+.login-modal__submit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 54px;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #ff8a2a 0%, var(--lm-orange) 100%);
+  box-shadow: 0 14px 28px -14px rgba(245, 112, 5, 0.85);
+  font-size: 16.5px;
+  line-height: 1.3;
+  font-weight: 800;
+  color: #fff;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    filter 0.2s ease;
+}
+
+.login-modal__submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 18px 32px -14px rgba(245, 112, 5, 0.95);
+  filter: brightness(1.04);
+}
+
+.login-modal__submit:focus-visible {
+  outline: 3px solid rgba(245, 112, 5, 0.4);
+  outline-offset: 3px;
+}
+
+.login-modal__submit:disabled {
+  opacity: 0.8;
+  cursor: progress;
+}
+
+.login-modal__spinner {
+  animation: login-modal-spin 0.8s linear infinite;
+}
+
+.login-modal__footnote {
+  margin: 22px 0 0;
+  text-align: center;
+  font-size: 14.5px;
+  line-height: 1.5;
+  font-weight: 500;
+  color: var(--lm-muted);
+}
+
+.login-modal__footnote a {
+  font-weight: 700;
+  color: var(--lm-blue);
+}
+
+.login-modal__footnote a:hover {
+  color: var(--lm-orange);
+}
+
+/* ─── Responsive ─── */
+
+@media (max-width: 991px) {
+  .login-modal__dialog {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1fr);
+    max-width: 760px;
+  }
+
+  .login-modal__aside {
+    padding: 32px 26px;
+  }
+
+  .login-modal__main {
+    padding: 36px 32px 30px;
+  }
+}
+
+/* Small tablets and phones: one column; the brand panel becomes a small line above the form. */
+@media (max-width: 767px) {
+  .login-modal {
+    padding: 16px;
+  }
+
+  .login-modal__dialog {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: 480px;
+  }
+
+  .login-modal__aside {
+    display: none;
+  }
+
+  .login-modal__main {
+    padding: 28px 24px 26px;
+  }
+
+  .login-modal__compact-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+    font-size: 15px;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    color: var(--lm-navy);
+  }
+
+  .login-modal__compact-brand img {
+    object-fit: contain;
+  }
+
+  .login-modal__close {
+    top: 22px;
+    right: 18px;
+  }
+
+  .login-modal__title {
+    font-size: 24px;
+  }
+}
+
+/* Phones: a sheet that slides up from the bottom edge. */
+@media (max-width: 575px) {
+  .login-modal {
+    padding: 24px 0 0;
+  }
+
+  .login-modal__dialog {
+    max-width: none;
+    margin: auto 0 0;
+    border-radius: 24px 24px 0 0;
+    animation-name: login-modal-sheet-in;
+  }
+
+  .login-modal.is-closing .login-modal__dialog {
+    animation-name: login-modal-sheet-out;
+  }
+
+  .login-modal__main {
+    padding: 24px 18px calc(24px + env(safe-area-inset-bottom));
+  }
+
+  .login-modal__role {
+    min-height: 60px;
+    font-size: 12.5px;
+  }
+
+  .login-modal__control input {
+    font-size: 16px; /* 16px stops iOS zooming into the field */
+  }
+}
+
+@keyframes login-modal-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes login-modal-fade-out {
+  to {
+    opacity: 0;
+  }
+}
+
+@keyframes login-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px) scale(0.97);
+  }
+}
+
+@keyframes login-modal-out {
+  to {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@keyframes login-modal-sheet-in {
+  from {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes login-modal-sheet-out {
+  to {
+    transform: translateY(100%);
+  }
+}
+
+@keyframes login-modal-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Reduced motion: no movement. (Not `animation: none` — the dialog closes when its closing animation ends.) */
+@media (prefers-reduced-motion: reduce) {
+  .login-modal,
+  .login-modal__dialog {
+    animation-duration: 1ms !important;
+  }
+
+  .login-modal__close:hover {
+    transform: none;
+  }
+}

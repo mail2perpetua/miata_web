@@ -1,4 +1,4 @@
-import { LOCATIONS } from '../content/highlights';
+import { TRAINING_COUNTRIES } from '../content/academy';
 
 const NAV_TEXT = ['<span class="icon-arrow-left"></span>', '<span class="icon-arrow"></span>'];
 const CAROUSEL = {
@@ -15,14 +15,14 @@ const CAROUSEL = {
 const CITY_STYLE = { marginBottom: '5px' };
 const BULLET_STYLE = { color: '#25a9a0', marginRight: '10px', fontSize: '12px' };
 
-/** "12+ Locations" world map followed by the carousel of clinical training countries. */
+/** World map followed by the carousel of the training network's countries and their institutions and facilities. */
 export function LocationsSection() {
   return (
     <>
       <section className="blog-details" style={{ padding: '60px 0 0 0' }}>
         <div className="container">
           <div className="section-title text-center">
-            <h2 className="section-title__title">12+ Locations</h2>
+            <h2 className="section-title__title">Training Across {TRAINING_COUNTRIES.length} Countries</h2>
           </div>
           <div className="row justify-content-center">
             <div className="col-xl-10 col-lg-7">
@@ -42,7 +42,7 @@ export function LocationsSection() {
             className="blog-page__carousel eduact-owl__carousel eduact-owl__dots owl-theme owl-carousel"
             data-owl-options={JSON.stringify(CAROUSEL)}
           >
-            {LOCATIONS.map((location) => (
+            {TRAINING_COUNTRIES.map((location) => (
               <div className="item" key={location.country}>
                 <div className="blog-two__item">
                   <div className="blog-two__content">
@@ -52,7 +52,7 @@ export function LocationsSection() {
                           {location.code}
                         </a>
                       </div>
-                      <div className="blog-two__date">{location.summary}</div>
+                      <div className="blog-two__date">Training institutions & facilities</div>
                     </div>
                     <h3 className="blog-two__title">
                       <a href="#" data-noop="">
@@ -61,10 +61,10 @@ export function LocationsSection() {
                     </h3>
                     <div className="blog-two__meta">
                       <div className="blog-two__meta__author" style={{ fontSize: '15px', color: '#666', width: '100%' }}>
-                        {location.cities.map((city, i) => (
-                          <div key={city} style={i < location.cities.length - 1 ? CITY_STYLE : undefined}>
+                        {location.places.map((place, i) => (
+                          <div key={place.name} style={i < location.places.length - 1 ? CITY_STYLE : undefined}>
                             <span style={BULLET_STYLE}>●</span>
-                            {city}
+                            {place.name}
                           </div>
                         ))}
                       </div>

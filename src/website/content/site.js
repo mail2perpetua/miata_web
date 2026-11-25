@@ -2,8 +2,10 @@
 
 export const CONTACT = {
   phone: '+61468474480',
-  phoneSpaced: '+61 4684 74480',
+  phoneSpaced: '+61 468 474 480',
   officePhone: '(03)96298835',
+  officePhoneSpaced: '(03) 9629 8835',
+  officeTel: '+61396298835', // office number for tel: links (international format)
   email: 'info@miataedu.org',
   admissionsEmail: 'admissions@miataedu.org',
   address: 'Level 3, Queen St, Melbourne Victoria 3000',
@@ -13,20 +15,98 @@ export const CONTACT = {
   callback: '+61468474480',
 };
 
+/**
+ * Header and mobile menu (the footer's Quick Links use the headings only). `children` is the heading's submenu.
+ * A `#section` link goes to that section of the page (most of MIATA's own content is on the home page).
+ */
 export const MAIN_MENU = [
   { label: 'Home', to: '/' },
-  { label: 'About Us', to: '/about' },
-  { label: 'Courses', to: '/courses' },
-  { label: 'Fees & Scholarships', to: '/fees-and-scholarships' },
+  {
+    label: 'About Us',
+    to: '/about',
+    children: [
+      { label: 'About MIATA', to: '/#about' },
+      { label: 'Our Training Approach', to: '/#approach' },
+      { label: 'Our Vision', to: '/#vision' },
+      { label: 'Why Choose MIATA', to: '/about' },
+    ],
+  },
+  {
+    label: 'International Training',
+    to: '/#network',
+    children: [
+      { label: 'Training Network & Locations', to: '/#network' },
+      { label: 'Training Partners & Hospitals', to: '/#partners' },
+      { label: 'Trainers & Faculty', to: '/#faculty' },
+      { label: 'Standards & Guidelines', to: '/#standards' },
+    ],
+  },
+  {
+    label: 'Courses',
+    to: '/courses',
+    children: [
+      { label: 'Programme Overview', to: '/courses' },
+      { label: 'Theoretical Modules', to: '/courses#theory' },
+      { label: 'Clinical Training', to: '/courses#clinical-training' },
+      { label: 'Paid Internship', to: '/courses#internship' },
+      { label: 'Certification & Pathways', to: '/#certification' },
+    ],
+  },
+  {
+    label: 'Admissions',
+    to: '/fees-and-scholarships',
+    children: [
+      { label: 'Fees & Scholarships', to: '/fees-and-scholarships' },
+      { label: 'Apply Now', to: '/apply' },
+      { label: 'Important Disclaimer', to: '/#disclaimer' },
+    ],
+  },
   { label: 'Contact Us', to: '/contact' },
 ];
 
-export const FOOTER_PROGRAMS = [
-  'PG Diploma in Ultrasound',
-  'Clinical Training',
-  'Paid Internship',
-  'ARDMS Preparation',
-  'Continuing Education',
+/** Footer link columns: a shorter, curated version of MAIN_MENU. `key` places the column in the footer grid. */
+export const FOOTER_LINKS = [
+  {
+    key: 'about',
+    title: 'About MIATA',
+    links: [
+      { label: 'About Us', to: '/#about' },
+      { label: 'Training Approach', to: '/#approach' },
+      { label: 'Trainers & Faculty', to: '/#faculty' },
+      { label: 'Our Vision', to: '/#vision' },
+      { label: 'Why Choose MIATA', to: '/about' },
+    ],
+  },
+  {
+    key: 'training',
+    title: 'Training Network',
+    links: [
+      { label: 'Locations', to: '/#network' },
+      { label: 'Partners & Hospitals', to: '/#partners' },
+      { label: 'Standards & Guidelines', to: '/#standards' },
+      { label: 'Certification & Pathways', to: '/#certification' },
+    ],
+  },
+  {
+    key: 'courses',
+    title: 'Courses & Fees',
+    links: [
+      { label: 'Programme Overview', to: '/courses' },
+      { label: 'Clinical Training', to: '/courses#clinical-training' },
+      { label: 'Paid Internship', to: '/courses#internship' },
+      { label: 'Fees & Scholarships', to: '/fees-and-scholarships' },
+      { label: 'Apply Now', to: '/apply' },
+    ],
+  },
+];
+
+// Footer social icons. These still point to each platform's home page, not to MIATA's own profiles: replace each
+// `href` with MIATA's page, and remove any platform MIATA does not use.
+export const SOCIAL_LINKS = [
+  { href: 'https://www.facebook.com/', icon: 'fab fa-facebook-f', label: 'Facebook' },
+  { href: 'https://www.linkedin.com/', icon: 'fab fa-linkedin-in', label: 'LinkedIn' },
+  { href: 'https://twitter.com/', icon: 'fab fa-twitter', label: 'Twitter' },
+  { href: 'https://www.youtube.com/', icon: 'fab fa-youtube', label: 'YouTube' },
 ];
 
 export const BROCHURE_URL = '/assets/images/miatabrochure.pdf';

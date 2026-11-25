@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { useForm } from '@/hooks/useForm';
 import { api } from '@/services/api';
 import * as v from '@/utils/validation';
@@ -7,6 +6,7 @@ import { PageHeader } from '@/website/layout/PageHeader';
 import { WebsitePage } from '@/website/layout/WebsitePage';
 import { FormMessage } from '@/website/sections/FormMessage';
 import { AuthArea, AuthField, AuthSubmit } from './AuthForm';
+import { LoginLink } from './LoginModal';
 
 export default function ForgotPasswordPage() {
   const [sent, setSent] = useState(null);
@@ -46,7 +46,7 @@ export default function ForgotPasswordPage() {
             </form>
           )}
           <p className="login-page__switch">
-            <Link to="/login">Back to login</Link>
+            <LoginLink aria-haspopup="dialog">Back to login</LoginLink>
           </p>
         </div>
       </AuthArea>

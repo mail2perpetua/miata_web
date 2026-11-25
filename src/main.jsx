@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfirmProvider, ToastProvider } from '@/components';
 import { AuthProvider } from '@/features/auth/AuthContext';
+import { LoginModalProvider } from '@/features/auth/LoginModalProvider';
 import { AppRoutes } from '@/routes/AppRoutes';
 import { ScrollToTop } from '@/routes/ScrollToTop';
 // Portal (dashboard) styles — scoped to <html class="lms">. The website's theme stylesheets are linked in index.html.
@@ -20,7 +21,9 @@ createRoot(document.getElementById('root')).render(
       <ToastProvider>
         <ConfirmProvider>
           <AuthProvider>
-            <AppRoutes />
+            <LoginModalProvider>
+              <AppRoutes />
+            </LoginModalProvider>
           </AuthProvider>
         </ConfirmProvider>
       </ToastProvider>

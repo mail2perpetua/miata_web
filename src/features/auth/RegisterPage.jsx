@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Link, useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 import { useForm } from '@/hooks/useForm';
 import { api } from '@/services/api';
 import * as v from '@/utils/validation';
@@ -8,6 +8,7 @@ import { WebsitePage } from '@/website/layout/WebsitePage';
 import { FormMessage } from '@/website/sections/FormMessage';
 import { AuthArea, AuthCheckbox, AuthField, AuthSubmit } from './AuthForm';
 import { useAuth } from './AuthContext';
+import { LoginLink } from './LoginModal';
 
 const PASSWORD_HINT = 'At least 8 characters, including a letter and a number.';
 
@@ -159,7 +160,11 @@ export default function RegisterPage() {
                 </li>
               </ul>
               <p className="login-portal__help">
-                Already registered? <Link to="/login/student">Login here</Link>.
+                Already registered?{' '}
+                <LoginLink role="student" aria-haspopup="dialog">
+                  Login here
+                </LoginLink>
+                .
               </p>
             </div>
           </div>

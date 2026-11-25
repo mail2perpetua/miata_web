@@ -165,29 +165,7 @@
   }
 }
 
-/* ─── /login — choose a portal ─── */
-.login-roles .section-title {
-  margin-bottom: 0;
-}
-
-/* Room for the card icons, which overlap the top edge of each card. */
-.login-roles__list {
-  padding-top: 100px;
-}
-
-.login-roles__card {
-  margin-bottom: 100px;
-}
-
-.login-roles__card .service-two__wrapper {
-  height: 100%;
-}
-
-.login-roles__card .service-two__text {
-  min-height: 78px;
-}
-
-/* ─── /login/:role — portal summary beside the form ─── */
+/* ─── Portal summary beside a sign-in form (the /register page). The login itself is a dialog: LoginModal. ─── */
 .login-portal__icon {
   display: inline-flex;
   align-items: center;
@@ -325,4 +303,121 @@
 
 .mobile-nav__apply .eduact-btn:focus-visible {
   box-shadow: 0 0 0 3px rgba(var(--eduact-white-rgb), 0.6);
+}
+
+/* ─── Main menu submenus (MAIN_MENU in content/site.js) ─── */
+
+/* Top-level headings stay on one line. */
+.main-menu .main-menu__list > li > a,
+.stricky-header .main-menu__list > li > a {
+  white-space: nowrap;
+}
+
+/* Desktop dropdowns: as wide as their longest item, a visible shadow (the theme's is white on white), rounded rows. */
+.main-menu .main-menu__list li ul,
+.stricky-header .main-menu__list li ul {
+  width: max-content;
+  border: 1px solid #e6eaf2;
+  box-shadow: 0 24px 50px -18px rgba(14, 42, 84, 0.3);
+}
+
+.main-menu .main-menu__list li ul li > a,
+.stricky-header .main-menu__list li ul li > a {
+  padding-right: 48px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+/* Keyboard users: a submenu opens while focus is inside it (a mouse click does not keep it open). */
+.main-menu .main-menu__list > li:has(:focus-visible) > ul,
+.stricky-header .main-menu__list > li:has(:focus-visible) > ul {
+  opacity: 1;
+  visibility: visible;
+  transform: scaleY(1) translateZ(0px);
+}
+
+/* Mobile menu: the heading link with its submenu button beside it (the original theme put the button inside the link). */
+.mobile-nav__item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.mobile-nav__content .main-menu__list .mobile-nav__item > a {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  height: 46px;
+  line-height: 30px;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.48px;
+  color: var(--eduact-white);
+}
+
+.mobile-nav__item button {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: none;
+  border-radius: 4px;
+  background-color: var(--eduact-base);
+  color: var(--eduact-white);
+  transform: rotate(-90deg);
+  transition:
+    transform 0.4s ease,
+    background-color 0.4s ease,
+    color 0.4s ease;
+}
+
+.mobile-nav__item button.expanded {
+  transform: rotate(0deg);
+  background-color: var(--eduact-white);
+  color: var(--eduact-black);
+}
+
+.mobile-nav__item button:focus-visible {
+  outline: 2px solid var(--eduact-white);
+  outline-offset: 2px;
+}
+
+.mobile-nav__content .main-menu__list ul.mobile-nav__submenu.is-open {
+  display: block;
+}
+
+.mobile-nav__content .main-menu__list .mobile-nav__submenu li > a {
+  font-size: 15px;
+  font-weight: 500;
+  color: rgba(var(--eduact-white-rgb), 0.85);
+}
+
+.mobile-nav__content .main-menu__list li.current > .mobile-nav__item > a,
+.mobile-nav__content .main-menu__list .mobile-nav__submenu li.current > a,
+.mobile-nav__content .main-menu__list a:hover {
+  color: var(--eduact-secondary);
+}
+
+/* Page sections linked from the menu (e.g. /courses#theory, /#partners) stop just below the sticky header, which
+   only exists from 1200px up. */
+@media (min-width: 1200px) {
+  .website-page section[id] {
+    scroll-margin-top: 100px;
+  }
+}
+
+/* White theme button for dark backgrounds (home page vision banner, footer). */
+.eduact-btn.eduact-btn--light,
+.eduact-btn.eduact-btn--light:hover {
+  background-color: var(--eduact-white);
+  color: #0e2a54;
+}
+
+.eduact-btn--light .eduact-btn__curve {
+  background-color: var(--eduact-base);
+  opacity: 0.12;
 }

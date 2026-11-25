@@ -49,11 +49,11 @@ export function AboutSection({ showMore = false }) {
           </div>
           <div className="col-xl-6 wow fadeInRight" data-wow-delay="100ms">
             <div className="about-two__content">
-              <SectionTitle tagline="About Us" title="Medical Imaging Accredited Training Academy (MIATA)" />
+              <SectionTitle tagline="About Us" title="Medical Imaging Training Academy (MIATA)" />
               <p className="about-two__content__text">
-                Medical Imaging Accredited Training Academy (MIATA) is a globally aligned training institution committed to developing
-                highly skilled diagnostic ultrasound professionals. Our programs are designed to bridge clinical skill gaps, enhance
-                diagnostic autonomy, and open doors to international career opportunities.
+                Medical Imaging Training Academy (MIATA) is a globally aligned training institution committed to developing highly skilled
+                diagnostic ultrasound professionals. Our programs are designed to bridge clinical skill gaps, enhance diagnostic autonomy,
+                and open doors to international career opportunities.
               </p>
               <div className="about-two__box">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 295 125">

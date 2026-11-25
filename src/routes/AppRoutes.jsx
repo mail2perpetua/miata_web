@@ -2,10 +2,9 @@ import { lazy, Suspense } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { ErrorBoundary, PageLoader } from '@/components';
 import ForgotPasswordPage from '@/features/auth/ForgotPasswordPage';
-import LoginRolesPage from '@/features/auth/LoginRolesPage';
+import { LoginRoute } from '@/features/auth/LoginModal';
 import RegisterPage from '@/features/auth/RegisterPage';
 import ResetPasswordPage from '@/features/auth/ResetPasswordPage';
-import RoleLoginPage from '@/features/auth/RoleLoginPage';
 import { DashboardLayout } from '@/layouts/DashboardLayout';
 import { WebsiteLayout } from '@/website/layout/WebsiteLayout';
 import AboutPage from '@/website/pages/AboutPage';
@@ -113,8 +112,9 @@ export function AppRoutes() {
             <Route path="contact" element={<ContactPage />} />
             <Route path="apply" element={<ApplyPage />} />
             <Route element={<GuestOnly />}>
-              <Route path="login" element={<LoginRolesPage />} />
-              <Route path="login/:role" element={<RoleLoginPage />} />
+              {/* Login is a dialog on the current page; these addresses open it over the home page. */}
+              <Route path="login" element={<LoginRoute />} />
+              <Route path="login/:role" element={<LoginRoute />} />
               <Route path="register" element={<RegisterPage />} />
               <Route path="forgot-password" element={<ForgotPasswordPage />} />
             </Route>

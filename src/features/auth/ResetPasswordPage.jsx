@@ -8,6 +8,7 @@ import { WebsitePage } from '@/website/layout/WebsitePage';
 import { FormMessage } from '@/website/sections/FormMessage';
 import { ThemeButton } from '@/website/sections/SectionTitle';
 import { AuthArea, AuthField, AuthSubmit } from './AuthForm';
+import { LoginLink } from './LoginModal';
 import { isLoginRole } from './roles';
 
 const PASSWORD_HINT = 'At least 8 characters, including a letter and a number.';
@@ -78,7 +79,7 @@ export default function ResetPasswordPage() {
                 Request a New Link
               </ThemeButton>
               <p className="login-page__switch">
-                <Link to="/login">Back to login</Link>
+                <LoginLink aria-haspopup="dialog">Back to login</LoginLink>
               </p>
             </>
           )}

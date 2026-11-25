@@ -44,7 +44,7 @@ export function CareerHero() {
                 Start Your <br /> International Ultrasound Career Today
               </h2>
               <p className="hero-banner__text wow fadeInUp animated" data-wow-delay="500ms" style={shown('500ms', 'fadeInUp')}>
-                Join hundreds of medical professionals who have transformed their careers with MIATA&apos;s globally recognized training
+                Join hundreds of medical professionals who have transformed their careers with MIATA&apos;s structured, practical training
                 program. <img src="/assets/images/shapes/banner-1-shape-1.png" alt="" />
               </p>
               <div className="hero-banner__btn wow fadeInUp animated" data-wow-delay="600ms" style={shown('600ms', 'fadeInUp')}>

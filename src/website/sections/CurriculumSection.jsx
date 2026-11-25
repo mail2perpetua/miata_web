@@ -58,7 +58,7 @@ export function CurriculumSection({ phase }) {
   const toggle = (index) => setOpenIndex((current) => (current === index ? null : index));
 
   return (
-    <section className="accrodion-one" style={{ padding: '0px 0 100px' }}>
+    <section id={phase.id} className="accrodion-one" style={{ padding: '0px 0 100px' }}>
       <div className="container">
         <SectionTitle tagline={phase.tagline} title={phase.title} centered />
         <div className="accrodion-one__wrapper eduact-accrodion">

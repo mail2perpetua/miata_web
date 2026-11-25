@@ -31,6 +31,7 @@ export const PROGRAM_PHASES = [
 /** Course page accordions: one section per phase. */
 export const CURRICULUM = [
   {
+    id: 'theory', // page anchor, linked from the Courses menu
     tagline: 'Phase 1',
     title: 'Theoretical Modules',
     modules: [
@@ -87,6 +88,7 @@ export const CURRICULUM = [
     ],
   },
   {
+    id: 'clinical-training',
     tagline: 'Phase 2',
     title: 'Clinical Training',
     modules: [
@@ -103,6 +105,7 @@ export const CURRICULUM = [
     ],
   },
   {
+    id: 'internship',
     tagline: 'Phase 3',
     title: 'Paid Internship',
     modules: [

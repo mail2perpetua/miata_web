@@ -1,5 +1,7 @@
+import { MapPin } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { HERO, NETWORK_COUNTRIES } from '../content/academy';
 import { BROCHURE_URL } from '../content/site';
 import { ThemeButton } from './SectionTitle';
 
@@ -43,11 +45,11 @@ function useInlineSvg(url) {
   return markup;
 }
 
-/** Home page banner: welcome text, buttons and the image carousel. */
+/** Home page banner: headline, buttons, the training network countries and the image carousel. */
 export function WelcomeHero() {
   const bgShape = useInlineSvg(BG_SHAPE_URL);
   return (
-    <section className="hero-banner-two" style={{ backgroundImage: 'url(/assets/images/shapes/banner-bg-2.png)' }}>
+    <section className="hero-banner-two hero-banner-two--home" style={{ backgroundImage: 'url(/assets/images/shapes/banner-bg-2.png)' }}>
       <div className="hero-banner-two__shape1 wow fadeInUp" data-wow-delay="200ms">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 133" fill="none">
           <path
@@ -69,12 +71,15 @@ export function WelcomeHero() {
       <div className="container">
         <div className="row">
           <div className="col-lg-6 d-flex align-items-center">
-            <div className="hero-banner-two__content">
-              <h2 className="hero-banner-two__title wow fadeInUp" data-wow-delay="400ms">
-                Welcome To <br /> MIATA
-              </h2>
-              <p className="hero-banner-two__text wow fadeInUp" data-wow-delay="500ms" style={{ textTransform: 'uppercase' }}>
-                <b>Medical Imaging Accredited Training Academy</b>
+            <div className="hero-banner-two__content home-hero">
+              <p className="home-hero__eyebrow wow fadeInUp" data-wow-delay="300ms">
+                {HERO.eyebrow}
+              </p>
+              <h1 className="hero-banner-two__title home-hero__title wow fadeInUp" data-wow-delay="400ms">
+                {HERO.title} <span className="home-hero__accent">{HERO.titleAccent}</span>
+              </h1>
+              <p className="hero-banner-two__text home-hero__text wow fadeInUp" data-wow-delay="500ms">
+                {HERO.text}
               </p>
               <div
                 className="hero-banner-two__btn wow fadeInUp"
@@ -88,6 +93,14 @@ export function WelcomeHero() {
                   Download Brochure
                 </ThemeButton>
               </div>
+              <ul className="home-hero__countries wow fadeInUp" data-wow-delay="700ms" aria-label="Training network countries">
+                {NETWORK_COUNTRIES.map((country) => (
+                  <li key={country}>
+                    <MapPin size={15} strokeWidth={2.2} aria-hidden="true" />
+                    {country}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
           <div className="col-lg-6">
